@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "932809408117",
+    "project_id": "reading-room-co",
+    "storage_bucket": "reading-room-co.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932809408117:android:06c5fcbf373bd2a30f823c",
+        "android_client_info": {
+          "package_name": "com.richu.reading_room_co"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "932809408117-louq9m85u7bev5urrcglcqe758q1dtcv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3FpKTDc5T8_T_x_aX0VqlBBK1JUHnRYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "932809408117-louq9m85u7bev5urrcglcqe758q1dtcv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
