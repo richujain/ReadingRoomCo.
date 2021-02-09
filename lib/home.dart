@@ -42,16 +42,16 @@ class _HomePage extends State<HomePage> {
   final databaseReference = FirebaseDatabase.instance.reference();
   List<String> starredPosts = [];
   DatabaseReference databaseReferenceForStarred;
-
+  String uid;
+  var _whichIcon;
+  var _whichIconColor;
   @override
   void initState() {
-    print("sample");
     categoryFuture = fetchWpPosts(categoriesApi);
     final FirebaseAuth auth = FirebaseAuth.instance;
-
-    void inputData() {
-      final User user = auth.currentUser;
-      final uid = user.uid;
+    final User user = auth.currentUser;
+    uid = user.uid;
+    void inputDataOnce() {
       databaseReferenceForStarred = FirebaseDatabase.instance.reference().child(uid).child("starred");
       databaseReferenceForStarred.once().then((DataSnapshot snap)
       {
@@ -59,9 +59,7 @@ class _HomePage extends State<HomePage> {
         var data = snap.value;
         starredPosts.clear();
         for(var individualKey in keys){
-          String starredPost = data[individualKey]['postid'].toString();
-          print("sample"+snap.value.toString());
-
+          String starredPost = data[individualKey]['imageurl'].toString();
           starredPosts.add(starredPost);
         }
         setState(() {
@@ -69,7 +67,7 @@ class _HomePage extends State<HomePage> {
         });
       });
     }
-    inputData();
+    inputDataOnce();
     super.initState();
   }
 
@@ -258,7 +256,7 @@ class _HomePage extends State<HomePage> {
                       }).toList()),
                 ),
               ),
-              isLoading
+              isLoading && uid==null && uid.length==0
                   ? Center(
                 child: CircularProgressIndicator(),
               ): postsByCategory(size),
@@ -407,7 +405,8 @@ class _HomePage extends State<HomePage> {
                         String category =
                         wpPost['_embedded']['wp:term'][0][0]['name'];
                         postId = wpPost['id'];
-                        bool isFavorite = starredPosts.contains(postId.toString());
+                        print(""+postId.toString() + " : "+starredPosts.toString());
+                        bool isFavorite = starredPosts.contains(imageUrl);
                         var author = wpPost['_embedded']['author'][0]['name'];
                         var unescape = new HtmlUnescape();
                         var convertedTitle = unescape.convert(title);
@@ -421,8 +420,16 @@ class _HomePage extends State<HomePage> {
                             postdata.category = category;
                             postdata.content = content;
                             postdata.author = author;
-
+                            print("onTap : "+imageUrl.toString());
                             Navigator.of(context).push(_createRoute());
+                          },
+                          onLongPress: (){
+                            databaseReference.child(uid).child("starred").child(""+postId.toString()).set({
+                              'imageurl' : imageUrl.toString(),
+                            });
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              content: Text("Added to Starred"),
+                            ));
                           },
                           child: Transform.scale(
                             scale: index == _index ? 1 : 0.95,
@@ -489,43 +496,7 @@ class _HomePage extends State<HomePage> {
                                                   fontSize: 15),
                                             ),
                                           ),
-                                          Container(
-                                            padding: EdgeInsets.all(8),
-                                            alignment: Alignment.bottomRight,
-                                            child: isFavorite ? IconButton(
-                                              icon: new Icon(Icons.star),
-                                              color: Colors.red,
-                                              onPressed: () {
-                                                /* Your code */
 
-                                              },
-                                            ) : IconButton(
-                                              icon: new Icon(Icons.star_border),
-                                              onPressed: () {
-                                                /* Your code */
-                                                isFavorite = true;
-                                                final FirebaseAuth auth = FirebaseAuth.instance;
-                                                final databaseReference = FirebaseDatabase.instance.reference();
-                                                void inputData() {
-                                                  final User user = auth.currentUser;
-                                                  final uid = user.uid;
-                                                  // here you write the codes to input the data into firestore
-                                                  databaseReferenceForStarred = FirebaseDatabase.instance.reference().child(uid).child("starred");
-                                                  databaseReference.child(uid).child("starred").child("$postId").set({
-                                                    'postid' : postId,
-                                                  });
-                                                }
-                                                inputData();
-
-
-
-
-
-
-                                              },
-                                            )
-
-                                          ),
                                         ],
                                       ),
                                     )),
@@ -572,3 +543,46 @@ class _HomePage extends State<HomePage> {
 
 
 }
+// void inputData() {
+//   databaseReferenceForStarred = FirebaseDatabase.instance.reference().child(uid).child("starred");
+//   databaseReferenceForStarred.once().then((DataSnapshot snap)
+//   {
+//     var keys = snap.value.keys;
+//     var data = snap.value;
+//     starredPosts.clear();
+//     for(var individualKey in keys){
+//       String starredPost = data[individualKey]['postid'].toString();
+//       starredPosts.add(starredPost);
+//     }
+//   });
+//   // here you write the codes to input the data into firestore
+//   print("postdata" + postdata.postId.toString());
+//
+// }
+// inputData();
+
+// isFavorite ? IconButton(
+// icon: new Icon(Icons.star),
+// color: Colors.red,
+// onPressed: () {
+// setState(() {
+// isFavorite = !isFavorite;
+//
+// });
+// /* Your code */
+// /* Your code */
+// },
+// ) : IconButton(
+// icon: new Icon(Icons.star_border),
+// onPressed: () {
+// isFavorite = !isFavorite;
+// widget.createState();
+//
+// setState(() {
+//
+// });
+// databaseReference.child(uid).child("starred").child(""+postId.toString()).set({
+// 'imageurl' : imageUrl.toString(),
+// });
+// },
+// )
