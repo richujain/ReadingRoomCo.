@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:convert' show utf8;
-import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,11 +10,11 @@ import 'package:flutter_wordpress/flutter_wordpress.dart' as wp;
 import 'package:http/http.dart' as http;
 import 'package:reading_room_co/history.dart';
 import 'package:reading_room_co/postdata.dart';
+import 'package:reading_room_co/sendfeedback.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reading_room_co/starred.dart';
 import 'package:reading_room_co/viewpost.dart';
 import 'wp-api.dart';
-import 'dart:math' as math;
 import 'package:auto_size_text/auto_size_text.dart';
 import 'postdata.dart';
 import 'dart:async';
@@ -164,7 +161,8 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 // Update the state of the app.
                 // ...
-                Navigator.pop(context);
+                Navigator.of(context).push(_createRouteToSendFeedback());
+
               },
             ),
             ListTile(
@@ -510,6 +508,24 @@ class _HomePage extends State<HomePage> {
   Route _createRouteToHistory() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => History(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+  Route _createRouteToSendFeedback() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => SendFeedback(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;
