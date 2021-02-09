@@ -85,6 +85,7 @@ class _HomePage extends State<HomePage> {
       "Series",
       "K Saraswathi Amma"
     ];
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -173,9 +174,11 @@ class _HomePage extends State<HomePage> {
               leading: Icon(Icons.money),
               title: Text('Donate'),
               onTap: () {
+                Navigator.pop(context);
+                const url = 'http://paypal.me/readingroomco';
+                launchURL(url);
                 // Update the state of the app.
                 // ...
-                Navigator.pop(context);
               },
             ),
             ListTile(
@@ -809,9 +812,8 @@ class _HomePage extends State<HomePage> {
     }
   }
 
+  }
 
-
-}
 // void inputData() {
 //   databaseReferenceForStarred = FirebaseDatabase.instance.reference().child(uid).child("starred");
 //   databaseReferenceForStarred.once().then((DataSnapshot snap)
