@@ -48,6 +48,15 @@ class _HomePage extends State<HomePage> {
   String uid;
   List<BookLists> bookLists = [];
 
+  List colors = [
+    Colors.deepOrangeAccent,
+    Colors.cyan,
+    Colors.lightGreen,
+    Colors.purpleAccent,
+    Colors.blue,
+    Colors.grey,
+  ];
+
   @override
   void initState() {
     categoryFuture = fetchWpPosts(categoriesApi);
@@ -325,9 +334,10 @@ class _HomePage extends State<HomePage> {
                           elevation: 0,
                           height: 50,
                           onPressed: () {
-
+                            var url = bookLists[0].link.toString();
+                            launchURL(url);
                           },
-                          color: Colors.redAccent,
+                          color: colors[0],
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -356,10 +366,10 @@ class _HomePage extends State<HomePage> {
                           elevation: 0,
                           height: 50,
                           onPressed: () {
-                            const url = "https://www.gatesnotes.com/About-Bill-Gates/Holiday-Books-2020";
+                            var url = bookLists[1].link.toString();
                             launchURL(url);
                           },
-                          color: Colors.cyan,
+                          color: colors[1],
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -394,9 +404,10 @@ class _HomePage extends State<HomePage> {
                           elevation: 0,
                           height: 50,
                           onPressed: () {
-
+                            var url = bookLists[2].link.toString();
+                            launchURL(url);
                           },
-                          color: Colors.lightGreen,
+                          color: colors[2],
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -425,9 +436,10 @@ class _HomePage extends State<HomePage> {
                           elevation: 0,
                           height: 50,
                           onPressed: () {
-
+                            var url = bookLists[3].link.toString();
+                            launchURL(url);
                           },
-                          color: Colors.purpleAccent,
+                          color: colors[3],
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -462,9 +474,10 @@ class _HomePage extends State<HomePage> {
                           elevation: 0,
                           height: 50,
                           onPressed: () {
-
+                            var url = bookLists[4].link.toString();
+                            launchURL(url);
                           },
-                          color: Colors.blue,
+                          color: colors[4],
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -493,9 +506,10 @@ class _HomePage extends State<HomePage> {
                           elevation: 0,
                           height: 50,
                           onPressed: () {
-
+                            var url = bookLists[5].link.toString();
+                            launchURL(url);
                           },
-                          color: Colors.grey,
+                          color: colors[5],
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
@@ -699,20 +713,6 @@ class _HomePage extends State<HomePage> {
                       onPageChanged: (int index) =>
                           setState(() => _index = index),
                       itemBuilder: (BuildContext context, int index) {
-                        List colors = [
-                          Colors.redAccent,
-                          Colors.greenAccent,
-                          Colors.yellow,
-                          Colors.pinkAccent,
-                          Colors.deepPurpleAccent,
-                          Colors.deepOrangeAccent,
-                          Colors.cyanAccent,
-                          Colors.amberAccent,
-                          Colors.lightBlueAccent,
-                          Colors.lightGreenAccent,
-                          Colors.limeAccent,
-                          Colors.tealAccent
-                        ];
                         Map wpPost = snapshot.data[index];
                         var imageUrl;
                         if (snapshot.data[index]["_embedded"]
