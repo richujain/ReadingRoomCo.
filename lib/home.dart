@@ -247,6 +247,7 @@ class _HomePage extends State<HomePage> {
 
                           });
                         });
+
                       },
                       items: listItem.map((valueItem) {
                         return DropdownMenuItem(
@@ -548,47 +549,47 @@ class _HomePage extends State<HomePage> {
     switch(valueChoose){
       case "Latest Posts":
         api = "wp-json/wp/v2/posts?_embed";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       case "Fiction" :
         api = "wp-json/wp/v2/posts?_embed&categories=7&per_page=100";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       case "Graphic Novel" :
         api = "wp-json/wp/v2/posts?_embed&categories=196&per_page=100";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       case "Interview" :
         api = "wp-json/wp/v2/posts?_embed&categories=11&per_page=100";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       case "Memoir" :
         api = "wp-json/wp/v2/posts?_embed&categories=12&per_page=100";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       case "Poetry" :
         api = "wp-json/wp/v2/posts?_embed&categories=8&per_page=100";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       case "Review" :
         api = "wp-json/wp/v2/posts?_embed&categories=5&per_page=100";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       case "Essay" :
         api = "wp-json/wp/v2/posts?_embed&categories=10&per_page=100";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       case "Series" :
         api = "wp-json/wp/v2/posts?_embed&categories=194&per_page=100";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       case "K Saraswathi Amma" :
         api = "wp-json/wp/v2/posts?_embed&categories=13&per_page=100";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
       default:
         api = "wp-json/wp/v2/posts?_embed";
-        return categoryPostsAsRow(size,api);
+        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
         break;
     }
   }
@@ -627,7 +628,6 @@ class _HomePage extends State<HomePage> {
                           Colors.limeAccent,
                           Colors.tealAccent
                         ];
-                        Random random = new Random();
                         Map wpPost = snapshot.data[index];
                         var imageUrl;
                         if (snapshot.data[index]["_embedded"]
