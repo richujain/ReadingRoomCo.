@@ -40,14 +40,37 @@ class _HomePage extends State<HomePage> {
   String valueChoose="Latest Posts";
   bool isLoading = false;
   final databaseReference = FirebaseDatabase.instance.reference();
-
-
+  List<String> starredPosts = [];
+  DatabaseReference databaseReferenceForStarred;
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+    print("sample");
     categoryFuture = fetchWpPosts(categoriesApi);
+    final FirebaseAuth auth = FirebaseAuth.instance;
+
+    void inputData() {
+      final User user = auth.currentUser;
+      final uid = user.uid;
+      databaseReferenceForStarred = FirebaseDatabase.instance.reference().child(uid).child("starred");
+      databaseReferenceForStarred.once().then((DataSnapshot snap)
+      {
+        var keys = snap.value.keys;
+        var data = snap.value;
+        starredPosts.clear();
+        for(var individualKey in keys){
+          String starredPost = data[individualKey]['postid'].toString();
+          print("sample"+snap.value.toString());
+
+          starredPosts.add(starredPost);
+        }
+        setState(() {
+
+        });
+      });
+    }
+    inputData();
+    super.initState();
   }
 
   @override
@@ -344,7 +367,7 @@ class _HomePage extends State<HomePage> {
               if (snapshot.hasData) {
                 return Center(
                   child: SizedBox(
-                    height: 400, // card height
+                    height: 450, // card height
                     child: PageView.builder(
                       allowImplicitScrolling: true,
                       scrollDirection: Axis.horizontal,
@@ -384,6 +407,7 @@ class _HomePage extends State<HomePage> {
                         String category =
                         wpPost['_embedded']['wp:term'][0][0]['name'];
                         postId = wpPost['id'];
+                        bool isFavorite = starredPosts.contains(postId.toString());
                         var author = wpPost['_embedded']['author'][0]['name'];
                         var unescape = new HtmlUnescape();
                         var convertedTitle = unescape.convert(title);
@@ -465,6 +489,43 @@ class _HomePage extends State<HomePage> {
                                                   fontSize: 15),
                                             ),
                                           ),
+                                          Container(
+                                            padding: EdgeInsets.all(8),
+                                            alignment: Alignment.bottomRight,
+                                            child: isFavorite ? IconButton(
+                                              icon: new Icon(Icons.star),
+                                              color: Colors.red,
+                                              onPressed: () {
+                                                /* Your code */
+
+                                              },
+                                            ) : IconButton(
+                                              icon: new Icon(Icons.star_border),
+                                              onPressed: () {
+                                                /* Your code */
+                                                isFavorite = true;
+                                                final FirebaseAuth auth = FirebaseAuth.instance;
+                                                final databaseReference = FirebaseDatabase.instance.reference();
+                                                void inputData() {
+                                                  final User user = auth.currentUser;
+                                                  final uid = user.uid;
+                                                  // here you write the codes to input the data into firestore
+                                                  databaseReferenceForStarred = FirebaseDatabase.instance.reference().child(uid).child("starred");
+                                                  databaseReference.child(uid).child("starred").child("$postId").set({
+                                                    'postid' : postId,
+                                                  });
+                                                }
+                                                inputData();
+
+
+
+
+
+
+                                              },
+                                            )
+
+                                          ),
                                         ],
                                       ),
                                     )),
@@ -506,4 +567,8 @@ class _HomePage extends State<HomePage> {
       adminKey: '',
     );
   }
+
+
+
+
 }

@@ -163,7 +163,8 @@ class ViewPost extends StatelessWidget {
                                       fontSize: 18,
                                       color: Colors.black,
                                       fontWeight: FontWeight.normal,
-                                      height: 2),
+                                      height: 2,),
+
                                 ),
                               ),
                             ])),
