@@ -18,6 +18,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'postdata.dart';
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
 
 class SendFeedback extends StatefulWidget {
   @override
@@ -25,8 +27,183 @@ class SendFeedback extends StatefulWidget {
 }
 
 class _SendFeedbackState extends State<SendFeedback> {
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  String ratingValue = "5";
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      body: SingleChildScrollView(
+
+        child: ConstrainedBox(
+
+          constraints: BoxConstraints(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+
+              Container(
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
+                      child: Center(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(
+                              'assets/images/circle_logo.jpg',
+                              height: 150,
+                              width: 150,
+                            ),
+                          )
+                      ),
+                    ),
+
+
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 50.0,left: 20.0, right: 20.0),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 20),
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 15.0, left: 20.0),
+                      child: RatingBar.builder(
+                          initialRating: 5,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            switch (index) {
+                              case 0:
+                                return Icon(
+                                  Icons.sentiment_very_dissatisfied,
+                                  color: Colors.red,
+                                );
+                              case 1:
+                                return Icon(
+                                  Icons.sentiment_dissatisfied,
+                                  color: Colors.redAccent,
+                                );
+                              case 2:
+                                return Icon(
+                                  Icons.sentiment_neutral,
+                                  color: Colors.amber,
+                                );
+                              case 3:
+                                return Icon(
+                                  Icons.sentiment_satisfied,
+                                  color: Colors.lightGreen,
+                                );
+                              case 4:
+                                return Icon(
+                                  Icons.sentiment_very_satisfied,
+                                  color: Colors.green,
+                                );
+                            }
+                          },
+                          onRatingUpdate: (rating) {
+                            print(rating);
+                            ratingValue = ""+rating.toString();
+                          },
+
+                      ),
+                    ),
+                    TextField(
+                      controller: titleController,
+                      decoration: InputDecoration(
+                          labelText: 'Title',
+                          labelStyle: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green)
+                          )
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      keyboardType: TextInputType.multiline,
+                      maxLength: null,
+                      maxLines: null,
+                      controller: descriptionController,
+                      decoration: InputDecoration(
+                          labelText: 'Description',
+                          labelStyle: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green)
+                          )
+                      ),
+                    ),
+                    SizedBox(height: 40),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+                      height: 50.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        color: Colors.green,
+                        elevation: 7.0,
+                        child: GestureDetector(
+                          onTap: (){
+
+                          },
+
+                          child: Center(
+                            child : InkWell(
+                              child: Text("Send Feedback",style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat'
+                              ),),
+                              onTap: () {
+                                print("tapped");
+                                writeToDatabase();
+
+                                // here you write the codes to input the data into firestore
+
+                              },
+                            )
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
-}
+
+  void writeToDatabase() {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final User user = auth.currentUser;
+  final uid = user.uid;
+  if(titleController.text.isEmpty){
+    print("Title is Empty!");
+  }
+  else if(descriptionController.text.isEmpty){
+    print("Description is Empty!");
+
+  }else{
+  String title = titleController.text.trim();
+  String description = descriptionController.text.trim();
+  final databaseReference = FirebaseDatabase.instance.reference();
+  databaseReference.child(uid).child("feedback").push().set({
+  'title' : title,
+  'desciption' : description,
+  'rating' : ratingValue,
+  }).then((value) => Navigator.pop(context));
+  }
+}}

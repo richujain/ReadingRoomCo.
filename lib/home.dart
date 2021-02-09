@@ -141,7 +141,9 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 // Update the state of the app.
                 // ...
+                Navigator.pop(context);
                 Navigator.of(context).push(_createRouteToStarred());
+
               },
             ),
             ListTile(
@@ -150,6 +152,7 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 // Update the state of the app.
                 // ...
+                Navigator.pop(context);
                 Navigator.of(context).push(_createRouteToHistory());
 
               },
@@ -161,6 +164,7 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 // Update the state of the app.
                 // ...
+                Navigator.pop(context);
                 Navigator.of(context).push(_createRouteToSendFeedback());
 
               },
