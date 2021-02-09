@@ -12,6 +12,7 @@ import 'package:flutter_wordpress/flutter_wordpress.dart' as wp;
 import 'package:http/http.dart' as http;
 import 'package:reading_room_co/history.dart';
 import 'package:reading_room_co/postdata.dart';
+import 'package:reading_room_co/starred.dart';
 import 'package:reading_room_co/viewpost.dart';
 import 'wp-api.dart';
 import 'dart:math' as math;
@@ -145,7 +146,7 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 // Update the state of the app.
                 // ...
-                Navigator.pop(context);
+                Navigator.of(context).push(_createRouteToStarred());
               },
             ),
             ListTile(
@@ -304,6 +305,24 @@ class _HomePage extends State<HomePage> {
       },
     );
   }
+  Route _createRouteToStarred() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => Starred(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
 
   postsByCategory(var size) {
     String api;
@@ -425,7 +444,12 @@ class _HomePage extends State<HomePage> {
                           },
                           onLongPress: (){
                             databaseReference.child(uid).child("starred").child(""+postId.toString()).set({
+                              'author' : author.toString(),
+                              'category' : category.toString(),
+                              'content' : content.toString(),
                               'imageurl' : imageUrl.toString(),
+                              'postid' : postId.toString(),
+                              'title' : convertedTitle.toString(),
                             });
                             Scaffold.of(context).showSnackBar(SnackBar(
                               content: Text("Added to Starred"),
@@ -538,7 +562,6 @@ class _HomePage extends State<HomePage> {
       adminKey: '',
     );
   }
-
 
 
 
