@@ -34,6 +34,16 @@ class _SendFeedbackState extends State<SendFeedback> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Reading Room Co.",
+            style: GoogleFonts.yellowtail(
+                textStyle: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold))),
+        backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(color: Colors.black),
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
 
         child: ConstrainedBox(
