@@ -15,6 +15,7 @@ import 'wp-api.dart';
 import 'dart:math' as math;
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
+import 'package:firebase_database/firebase_database.dart';
 
 class ViewPost extends StatelessWidget {
   wp.WordPress wordPress;
@@ -51,7 +52,15 @@ class ViewPost extends StatelessWidget {
     if(postData.imageurl != null){
       imageurl = postData.imageurl;
     }
-
+    final databaseReference = FirebaseDatabase.instance.reference();
+    databaseReference.child("history").child("$postId").set({
+      'postid' : postId,
+      'title' : ""+title,
+      'category' : ""+category,
+      'author' : ""+author,
+      'imageurl' : ""+imageurl,
+      'content' : ""+content,
+    });
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,

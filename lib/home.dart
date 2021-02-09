@@ -87,24 +87,30 @@ class _HomePage extends State<HomePage> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
-              child: Text('Howdy, ' + _firebaseAuth.currentUser.email,style: GoogleFonts.roboto(
-                  textStyle: TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
-                      fontWeight:
-                      FontWeight.bold)),),
-              decoration: BoxDecoration(
-                // image: DecorationImage(
-                //     image: AssetImage("assets/images/logo.jpg"),
-                //       fit: BoxFit.cover
-                //
-                // ),
-                color: Colors.blue,
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                height: 100.0,
+                child: DrawerHeader(
+                  child: Text('Hello, ' + _firebaseAuth.currentUser.displayName,style: GoogleFonts.roboto(
+                      textStyle: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight:
+                          FontWeight.bold)),),
+                  decoration: BoxDecoration(
+                    // image: DecorationImage(
+                    //     image: AssetImage("assets/images/logo.jpg"),
+                    //       fit: BoxFit.cover
+                    //
+                    // ),
+                  ),
+                ),
               ),
             ),
             ListTile(
-              title: Text('Item 1 '),
+              leading: Icon(Icons.home),
+              title: Text('Home'),
               onTap: () {
                 // Update the state of the app.
                 // ...
@@ -112,6 +118,58 @@ class _HomePage extends State<HomePage> {
               },
             ),
             ListTile(
+              leading: Icon(Icons.star),
+              title: Text('Starred'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.history),
+              title: Text('History'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+              },
+            ),
+
+            ListTile(
+              leading: Icon(Icons.rate_review),
+              title: Text('Send Feedback'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.money),
+              title: Text('Donate'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+              },
+            ),
+
+            // Divider(
+            //   height: 1,
+            //   thickness: 1,
+            // ),
+            ListTile(
+              leading: Icon(Icons.logout),
               title: Text('Logout'),
               onTap: () {
                 // Update the state of the app.
@@ -124,6 +182,8 @@ class _HomePage extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
+    child: ConstrainedBox(
+    constraints: BoxConstraints(),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -178,6 +238,7 @@ class _HomePage extends State<HomePage> {
                 child: CircularProgressIndicator(),
               ): postsByCategory(size),
             ]),
+      ),
       ),
     );
   }

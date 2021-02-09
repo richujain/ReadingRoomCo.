@@ -35,184 +35,192 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
-                  child: Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.asset(
-                        'assets/images/app_logo.jpg',
-                        height: 100,
-                        width: 100,
-                      ),
-                    )
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(0.0, 215.0, 30.0, 0.0),
-                  child: Center(
-                      child: Text(
-                        'Reading Room Co',
-                        style: GoogleFonts.yellowtail(
-                          textStyle: TextStyle(color: Colors.black, fontSize: 50,fontWeight: FontWeight.bold),
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
+                    child: Center(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16),
+                        child: Image.asset(
+                          'assets/images/app_logo.jpg',
+                          height: 100,
+                          width: 100,
                         ),
                       )
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(345.0, 195.0, 0.0, 0.0),
-                  child: Text(
-                    '.',
-                    style: TextStyle(
-                      fontSize: 80,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 50.0,left: 20.0, right: 20.0),
-            child: Column(
-              children: <Widget>[
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                      labelText: 'EMAIL',
-                      labelStyle: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.green)
-                      )
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                      labelText: 'PASSWORD',
-                      labelStyle: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.green)
-                      )
-                  ),
-                  obscureText: true,
-                ),
-                SizedBox(height: 20),
-                Container(
-                  alignment: Alignment(1.0,0.0),
-                  padding: EdgeInsets.only(top: 15.0, left: 20.0),
-                  child: InkWell(
-                    child: Text('Forgot Password',
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Montserrat',
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 40),
-                Container(
-                  height: 50.0,
-                  child: Material(
-                    borderRadius: BorderRadius.circular(20.0),
-                    color: Colors.green,
-                    elevation: 7.0,
-                    child: GestureDetector(
-                      onTap: (){
-                        context.read<AuthenticationService>().signIn(
-                          email: emailController.text.trim(),
-                          password: passwordController.text.trim(),
-                        );
-                      },
-
-                      child: Center(
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0.0, 215.0, 30.0, 0.0),
+                    child: Center(
                         child: Text(
-                          'LOGIN',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Montserrat'
+                          'Reading Room Co',
+                          style: GoogleFonts.yellowtail(
+                            textStyle: TextStyle(color: Colors.black, fontSize: 50,fontWeight: FontWeight.bold),
+                          ),
+                        )
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(345.0, 195.0, 0.0, 0.0),
+                    child: Text(
+                      '.',
+                      style: TextStyle(
+                        fontSize: 80,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 50.0,left: 20.0, right: 20.0),
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                        labelText: 'EMAIL',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green)
+                        )
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  TextField(
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                        labelText: 'PASSWORD',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green)
+                        )
+                    ),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: 20),
+                  Container(
+                    alignment: Alignment(1.0,0.0),
+                    padding: EdgeInsets.only(top: 15.0, left: 20.0),
+                    child: InkWell(
+                      child: Text('Forgot Password',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 40),
+                  Container(
+                    height: 50.0,
+                    child: Material(
+                      borderRadius: BorderRadius.circular(20.0),
+                      color: Colors.green,
+                      elevation: 7.0,
+                      child: GestureDetector(
+                        onTap: (){
+                          context.read<AuthenticationService>().signIn(
+                            email: emailController.text.trim(),
+                            password: passwordController.text.trim(),
+                          );
+                        },
+
+                        child: Center(
+                          child: Text(
+                            'LOGIN',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Montserrat'
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(height: 30.0),
-                MaterialButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.white)
+                  SizedBox(height: 30.0),
+                  MaterialButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: Colors.white)
+                    ),
+                    elevation: 0,
+                    minWidth: double.maxFinite,
+                    height: 50,
+                    onPressed: () {
+                      signInWithGoogle().whenComplete(() {
+                        Navigator.of(context).popAndPushNamed('/home');
+                      });
+                    },
+                    color: Colors.blue,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.google),
+                        SizedBox(width: 10),
+                        Text('Sign-in using Google',
+                            style: TextStyle(color: Colors.white, fontSize: 16)),
+                      ],
+                    ),
+                    textColor: Colors.white,
                   ),
-                  elevation: 0,
-                  minWidth: double.maxFinite,
-                  height: 50,
-                  onPressed: () {
-                    signInWithGoogle().whenComplete(() {
-                      Navigator.of(context).popAndPushNamed('/home');
-                    });
-                  },
-                  color: Colors.blue,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(FontAwesomeIcons.google),
-                      SizedBox(width: 10),
-                      Text('Sign-in using Google',
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
-                    ],
-                  ),
-                  textColor: Colors.white,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'New to ReadingRoomCo.?',
-                style: TextStyle(
-                    fontFamily: 'Montserrat'
-                ),
+                ],
               ),
-              SizedBox(width: 5.0),
-              InkWell(
-                onTap: (){
-                  //Navigator.of(context).pushNamed('/signup');
-                },
-                child: Text(
-                  'Register',
-                  style: TextStyle(
-                    color: Colors.green,
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline,
+            ),
+            SizedBox(height: 20.0),
+            Container(
+              padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'New to ReadingRoomCo.?',
+                    style: TextStyle(
+                        fontFamily: 'Montserrat'
+                    ),
                   ),
-                ),
-              )
-            ],
-          )
-        ],
+                  SizedBox(width: 5.0),
+                  InkWell(
+                    onTap: (){
+                      //Navigator.of(context).pushNamed('/signup');
+                    },
+                    child: Text(
+                      'Register',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
       ),
     );
   }
