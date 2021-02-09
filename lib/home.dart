@@ -453,6 +453,7 @@ class _HomePage extends State<HomePage> {
                             });
                             Scaffold.of(context).showSnackBar(SnackBar(
                               content: Text("Added to Starred"),
+                              duration: const Duration(seconds: 1),
                             ));
                           },
                           child: Transform.scale(
