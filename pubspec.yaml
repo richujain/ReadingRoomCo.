@@ -41,6 +41,9 @@ dependencies:
   flutter_html: ^0.8.2
   firebase_database:
   firebase_core:
+  url_launcher: ^5.7.10
+
+
 
 
 

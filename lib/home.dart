@@ -3,6 +3,7 @@ import 'dart:convert' show utf8;
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:html_unescape/html_unescape.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_wordpress/flutter_wordpress.dart' as wp;
 import 'package:http/http.dart' as http;
 import 'package:reading_room_co/history.dart';
 import 'package:reading_room_co/postdata.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:reading_room_co/starred.dart';
 import 'package:reading_room_co/viewpost.dart';
 import 'wp-api.dart';
@@ -44,8 +46,6 @@ class _HomePage extends State<HomePage> {
   List<String> starredPosts = [];
   DatabaseReference databaseReferenceForStarred;
   String uid;
-  var _whichIcon;
-  var _whichIconColor;
   @override
   void initState() {
     categoryFuture = fetchWpPosts(categoriesApi);
@@ -75,9 +75,7 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     initializeWordpress();
-    //print('posts'+wp_posts.toString());
     final Size size = MediaQuery.of(context).size;
-    int index = 0;
     List listItem = [
       "Latest Posts",
       "Fiction",
@@ -210,6 +208,7 @@ class _HomePage extends State<HomePage> {
     constraints: BoxConstraints(),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -261,10 +260,230 @@ class _HomePage extends State<HomePage> {
                   ? Center(
                 child: CircularProgressIndicator(),
               ): postsByCategory(size),
+              Container(
+                padding: EdgeInsets.fromLTRB(25, 25, 8, 8),
+                alignment: Alignment.centerLeft,
+                child: Text("Top Suggestions",style: GoogleFonts.roboto(
+                    textStyle: TextStyle(
+                        fontSize: 25,
+                        color: Colors.black,
+                        fontWeight:
+                        FontWeight.bold)),
+                ),
+              ),
+
+              new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                      alignment: Alignment.bottomLeft,
+                      width: MediaQuery.of(context).size.width /2,
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)
+                        ),
+                        elevation: 0,
+                        height: 50,
+                        onPressed: () {
+
+                        },
+                        color: Colors.deepOrangeAccent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.laptop),
+                            SizedBox(width: 20),
+                            Text('Bill Gates',
+                                style: TextStyle(color: Colors.white, fontSize: 16)),
+                          ],
+                        ),
+                        textColor: Colors.white,
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                      alignment: Alignment.bottomLeft,
+                      width: MediaQuery.of(context).size.width /2,
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)
+                        ),
+                        elevation: 0,
+                        height: 50,
+                        onPressed: () {
+
+                        },
+                        color: Colors.cyan,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.dollarSign),
+                            SizedBox(width: 20),
+                            Text('Warren Buffet',
+                                style: TextStyle(color: Colors.white, fontSize: 16)),
+                          ],
+                        ),
+                        textColor: Colors.white,
+                      ),
+                    ),
+                  ]
+              ),
+
+
+
+              new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                      alignment: Alignment.bottomLeft,
+                      width: MediaQuery.of(context).size.width /2,
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)
+                        ),
+                        elevation: 0,
+                        height: 50,
+                        onPressed: () {
+
+                        },
+                        color: Colors.lightGreen,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.spaceShuttle),
+                            SizedBox(width: 20),
+                            Text('Elon Musk',
+                                style: TextStyle(color: Colors.white, fontSize: 16)),
+                          ],
+                        ),
+                        textColor: Colors.white,
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                      alignment: Alignment.bottomLeft,
+                      width: MediaQuery.of(context).size.width /2,
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)
+                        ),
+                        elevation: 0,
+                        height: 50,
+                        onPressed: () {
+
+                        },
+                        color: Colors.purpleAccent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.crown),
+                            SizedBox(width: 20),
+                            Text('Barack Obama',
+                                style: TextStyle(color: Colors.white, fontSize: 16)),
+                          ],
+                        ),
+                        textColor: Colors.white,
+                      ),
+                    ),
+                  ]
+              ),
+
+
+
+              new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                      alignment: Alignment.bottomLeft,
+                      width: MediaQuery.of(context).size.width /2,
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)
+                        ),
+                        elevation: 0,
+                        height: 50,
+                        onPressed: () {
+
+                        },
+                        color: Colors.blue,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.shoppingCart),
+                            SizedBox(width: 20),
+                            Text('Jeff Bezos',
+                                style: TextStyle(color: Colors.white, fontSize: 16)),
+                          ],
+                        ),
+                        textColor: Colors.white,
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                      alignment: Alignment.bottomLeft,
+                      width: MediaQuery.of(context).size.width /2,
+                      child: MaterialButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                            side: BorderSide(color: Colors.white)
+                        ),
+                        elevation: 0,
+                        height: 50,
+                        onPressed: () {
+
+                        },
+                        color: Colors.grey,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(FontAwesomeIcons.facebook),
+                            SizedBox(width: 20),
+                            Text('M. Zuckerberg',
+                                style: TextStyle(color: Colors.white, fontSize: 16)),
+                          ],
+                        ),
+                        textColor: Colors.white,
+                      ),
+                    ),
+                  ]
+              ),
+
+
+
+
+
+              Container(
+                padding: EdgeInsets.fromLTRB(25, 25, 8, 8),
+                alignment: Alignment.bottomCenter,
+                child: InkWell(
+                  child: Text("Visit our Website : ReadingRoomCo.com",style: GoogleFonts.roboto(
+                      textStyle: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                          fontWeight:
+                          FontWeight.bold),
+                          fontStyle: FontStyle.italic),),
+                  onTap: () {
+                    const url = 'https://readingroomco.com';
+                    launchURL(url);
+                  },
+                ),
+
+              ),
+
             ]),
       ),
       ),
     );
+
   }
 
   Route _createRoute() {
@@ -424,8 +643,6 @@ class _HomePage extends State<HomePage> {
                         String category =
                         wpPost['_embedded']['wp:term'][0][0]['name'];
                         postId = wpPost['id'];
-                        print(""+postId.toString() + " : "+starredPosts.toString());
-                        bool isFavorite = starredPosts.contains(imageUrl);
                         var author = wpPost['_embedded']['author'][0]['name'];
                         var unescape = new HtmlUnescape();
                         var convertedTitle = unescape.convert(title);
@@ -439,7 +656,6 @@ class _HomePage extends State<HomePage> {
                             postdata.category = category;
                             postdata.content = content;
                             postdata.author = author;
-                            print("onTap : "+imageUrl.toString());
                             Navigator.of(context).push(_createRoute());
                           },
                           onLongPress: (){
@@ -562,6 +778,15 @@ class _HomePage extends State<HomePage> {
       adminName: '',
       adminKey: '',
     );
+  }
+
+  void  launchURL(String url) async {
+    print("Trying");
+    if (await canLaunch(url)) {
+      await launch(url, forceWebView: true, enableJavaScript: true,forceSafariVC: true);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
 
