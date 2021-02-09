@@ -20,7 +20,7 @@ import 'package:firebase_database/firebase_database.dart';
 class ViewPost extends StatelessWidget {
   wp.WordPress wordPress;
 
-  PostData postData = new PostData();
+  PostData postData = new PostData("loading...","loading...","loading...","loading...","loading...","loading...");
 
   ViewPost({Key key, @required this.postData}) : super(key: key);
 
@@ -52,15 +52,24 @@ class ViewPost extends StatelessWidget {
     if(postData.imageurl != null){
       imageurl = postData.imageurl;
     }
-    final databaseReference = FirebaseDatabase.instance.reference();
-    databaseReference.child("history").child("$postId").set({
-      'postid' : postId,
-      'title' : ""+title,
-      'category' : ""+category,
-      'author' : ""+author,
-      'imageurl' : ""+imageurl,
-      'content' : ""+content,
-    });
+    final FirebaseAuth auth = FirebaseAuth.instance;
+
+    void inputData() {
+      final User user = auth.currentUser;
+      final uid = user.uid;
+      // here you write the codes to input the data into firestore
+      final databaseReference = FirebaseDatabase.instance.reference();
+
+      databaseReference.child(uid).child("history").child("$postId").set({
+        'postid' : postId,
+        'title' : ""+title,
+        'category' : ""+category,
+        'author' : ""+author,
+        'imageurl' : ""+imageurl,
+        'content' : ""+content,
+      });
+    }
+    inputData();
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,

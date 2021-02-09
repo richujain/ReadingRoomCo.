@@ -10,6 +10,7 @@ import 'package:reading_room_co/authentication_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_wordpress/flutter_wordpress.dart' as wp;
 import 'package:http/http.dart' as http;
+import 'package:reading_room_co/history.dart';
 import 'package:reading_room_co/postdata.dart';
 import 'package:reading_room_co/viewpost.dart';
 import 'wp-api.dart';
@@ -33,7 +34,7 @@ class _HomePage extends State<HomePage> {
   final String api = "wp-json/wp/v2/posts?_embed";
   List wp_posts;
   var postId;
-  PostData postdata = new PostData();
+  PostData postdata = new PostData("loading...","loading...","loading...","loading...","loading...","loading...");
   Future categoryFuture;
   final String categoriesApi = "wp-json/wp/v2/categories";
   String valueChoose="Latest Posts";
@@ -132,7 +133,8 @@ class _HomePage extends State<HomePage> {
               onTap: () {
                 // Update the state of the app.
                 // ...
-                Navigator.pop(context);
+                Navigator.of(context).push(_createRouteToHistory());
+
               },
             ),
 
@@ -255,6 +257,24 @@ class _HomePage extends State<HomePage> {
 
         var tween =
             Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+  Route _createRouteToHistory() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => History(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
