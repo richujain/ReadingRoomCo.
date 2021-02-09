@@ -8,6 +8,7 @@ import 'package:reading_room_co/authentication_service.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_wordpress/flutter_wordpress.dart' as wp;
 import 'package:http/http.dart' as http;
+import 'package:reading_room_co/booklists.dart';
 import 'package:reading_room_co/history.dart';
 import 'package:reading_room_co/postdata.dart';
 import 'package:reading_room_co/sendfeedback.dart';
@@ -34,29 +35,58 @@ class _HomePage extends State<HomePage> {
   final String api = "wp-json/wp/v2/posts?_embed";
   List wp_posts;
   var postId;
-  PostData postdata = new PostData("loading...","loading...","loading...","loading...","loading...","loading...");
+  PostData postdata = new PostData(
+      "loading...", "loading...", "loading...", "loading...", "loading...",
+      "loading...");
   Future categoryFuture;
   final String categoriesApi = "wp-json/wp/v2/categories";
-  String valueChoose="Latest Posts";
+  String valueChoose = "Latest Posts";
   bool isLoading = false;
   final databaseReference = FirebaseDatabase.instance.reference();
   List<String> starredPosts = [];
   DatabaseReference databaseReferenceForStarred;
   String uid;
+  List<BookLists> bookLists = [];
+
   @override
   void initState() {
     categoryFuture = fetchWpPosts(categoriesApi);
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User user = auth.currentUser;
     uid = user.uid;
+    void fetchBookRecommendation(){
+      final databaseReferenceForBookList = FirebaseDatabase.instance.reference().child("booklists");
+      databaseReferenceForBookList.once().then((DataSnapshot snap) {
+        var keys = snap.value.keys;
+        var data = snap.value;
+
+        bookLists.clear();
+        for (var individualKey in keys) {
+          BookLists book = new BookLists(
+            data[individualKey]['name'],
+            data[individualKey]['link'],
+            data[individualKey]['icon'],
+            data[individualKey]['color'],
+          );
+          bookLists.add(book);
+          setState(() {
+
+          });
+        }
+        for(var i = 0 ; i < 6 ; i++){
+          print(""+bookLists[5].name);
+        }
+      });
+    }
+    fetchBookRecommendation();
     void inputDataOnce() {
-      databaseReferenceForStarred = FirebaseDatabase.instance.reference().child(uid).child("starred");
-      databaseReferenceForStarred.once().then((DataSnapshot snap)
-      {
+      databaseReferenceForStarred =
+          FirebaseDatabase.instance.reference().child(uid).child("starred");
+      databaseReferenceForStarred.once().then((DataSnapshot snap) {
         var keys = snap.value.keys;
         var data = snap.value;
         starredPosts.clear();
-        for(var individualKey in keys){
+        for (var individualKey in keys) {
           String starredPost = data[individualKey]['imageurl'].toString();
           starredPosts.add(starredPost);
         }
@@ -72,7 +102,9 @@ class _HomePage extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     initializeWordpress();
-    final Size size = MediaQuery.of(context).size;
+    final Size size = MediaQuery
+        .of(context)
+        .size;
     List listItem = [
       "Latest Posts",
       "Fiction",
@@ -111,12 +143,13 @@ class _HomePage extends State<HomePage> {
               child: Container(
                 height: 100.0,
                 child: DrawerHeader(
-                  child: Text('Hello, ' + _firebaseAuth.currentUser.displayName,style: GoogleFonts.roboto(
-                      textStyle: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                          fontWeight:
-                          FontWeight.bold)),),
+                  child: Text('Hello, ' + _firebaseAuth.currentUser.displayName,
+                    style: GoogleFonts.roboto(
+                        textStyle: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontWeight:
+                            FontWeight.bold)),),
                   decoration: BoxDecoration(
                     // image: DecorationImage(
                     //     image: AssetImage("assets/images/logo.jpg"),
@@ -144,7 +177,6 @@ class _HomePage extends State<HomePage> {
                 // ...
                 Navigator.pop(context);
                 Navigator.of(context).push(_createRouteToStarred());
-
               },
             ),
             ListTile(
@@ -155,7 +187,6 @@ class _HomePage extends State<HomePage> {
                 // ...
                 Navigator.pop(context);
                 Navigator.of(context).push(_createRouteToHistory());
-
               },
             ),
 
@@ -167,7 +198,6 @@ class _HomePage extends State<HomePage> {
                 // ...
                 Navigator.pop(context);
                 Navigator.of(context).push(_createRouteToSendFeedback());
-
               },
             ),
             ListTile(
@@ -209,301 +239,318 @@ class _HomePage extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
-    child: ConstrainedBox(
-    constraints: BoxConstraints(),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Container(
-                  padding: EdgeInsets.only(left: 16,right: 16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: DropdownButton(
-                      hint: Text("Select Category",
-                          style: GoogleFonts.roboto(
-                              textStyle: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  fontWeight:
-                                  FontWeight.bold))),
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 36,
-                      isExpanded: true,
-                      underline: SizedBox(),
-                      style: GoogleFonts.roboto(
-                          textStyle: TextStyle(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: DropdownButton(
+                        hint: Text("Select Category",
+                            style: GoogleFonts.roboto(
+                                textStyle: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight:
+                                    FontWeight.bold))),
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 36,
+                        isExpanded: true,
+                        underline: SizedBox(),
+                        style: GoogleFonts.roboto(
+                            textStyle: TextStyle(
                               fontSize: 20,
                               color: Colors.black,)),
-                      value: valueChoose,
-                      onChanged: (newValue) {
-                        setState(() {
-                          isLoading = true;
-                          valueChoose = newValue;
-                          postsByCategory(size);
-                          Future.delayed(const Duration(milliseconds: 10), () {
-                            setState(() {
-                              isLoading = false;
+                        value: valueChoose,
+                        onChanged: (newValue) {
+                          setState(() {
+                            isLoading = true;
+                            valueChoose = newValue;
+                            postsByCategory(size);
+                            Future.delayed(
+                                const Duration(milliseconds: 10), () {
+                              setState(() {
+                                isLoading = false;
+                              });
                             });
-
                           });
-                        });
-
-                      },
-                      items: listItem.map((valueItem) {
-                        return DropdownMenuItem(
-                          value: valueItem,
-                          child: Text(valueItem),
-                        );
-                      }).toList()),
+                        },
+                        items: listItem.map((valueItem) {
+                          return DropdownMenuItem(
+                            value: valueItem,
+                            child: Text(valueItem),
+                          );
+                        }).toList()),
+                  ),
                 ),
-              ),
-              isLoading && uid==null && uid.length==0
-                  ? Center(
-                child: CircularProgressIndicator(),
-              ): postsByCategory(size),
-              Container(
-                padding: EdgeInsets.fromLTRB(25, 25, 8, 8),
-                alignment: Alignment.centerLeft,
-                child: Text("Top Suggestions",style: GoogleFonts.roboto(
-                    textStyle: TextStyle(
-                        fontSize: 25,
-                        color: Colors.black,
-                        fontWeight:
-                        FontWeight.bold)),
-                ),
-              ),
-
-              new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                      alignment: Alignment.bottomLeft,
-                      width: MediaQuery.of(context).size.width /2,
-                      child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.white)
-                        ),
-                        elevation: 0,
-                        height: 50,
-                        onPressed: () {
-
-                        },
-                        color: Colors.deepOrangeAccent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(FontAwesomeIcons.laptop),
-                            SizedBox(width: 20),
-                            Text('Bill Gates',
-                                style: TextStyle(color: Colors.white, fontSize: 16)),
-                          ],
-                        ),
-                        textColor: Colors.white,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                      alignment: Alignment.bottomLeft,
-                      width: MediaQuery.of(context).size.width /2,
-                      child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.white)
-                        ),
-                        elevation: 0,
-                        height: 50,
-                        onPressed: () {
-
-                        },
-                        color: Colors.cyan,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(FontAwesomeIcons.dollarSign),
-                            SizedBox(width: 20),
-                            Text('Warren Buffet',
-                                style: TextStyle(color: Colors.white, fontSize: 16)),
-                          ],
-                        ),
-                        textColor: Colors.white,
-                      ),
-                    ),
-                  ]
-              ),
-
-
-
-              new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                      alignment: Alignment.bottomLeft,
-                      width: MediaQuery.of(context).size.width /2,
-                      child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.white)
-                        ),
-                        elevation: 0,
-                        height: 50,
-                        onPressed: () {
-
-                        },
-                        color: Colors.lightGreen,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(FontAwesomeIcons.spaceShuttle),
-                            SizedBox(width: 20),
-                            Text('Elon Musk',
-                                style: TextStyle(color: Colors.white, fontSize: 16)),
-                          ],
-                        ),
-                        textColor: Colors.white,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                      alignment: Alignment.bottomLeft,
-                      width: MediaQuery.of(context).size.width /2,
-                      child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.white)
-                        ),
-                        elevation: 0,
-                        height: 50,
-                        onPressed: () {
-
-                        },
-                        color: Colors.purpleAccent,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(FontAwesomeIcons.crown),
-                            SizedBox(width: 20),
-                            Text('Barack Obama',
-                                style: TextStyle(color: Colors.white, fontSize: 16)),
-                          ],
-                        ),
-                        textColor: Colors.white,
-                      ),
-                    ),
-                  ]
-              ),
-
-
-
-              new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                      alignment: Alignment.bottomLeft,
-                      width: MediaQuery.of(context).size.width /2,
-                      child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.white)
-                        ),
-                        elevation: 0,
-                        height: 50,
-                        onPressed: () {
-
-                        },
-                        color: Colors.blue,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(FontAwesomeIcons.shoppingCart),
-                            SizedBox(width: 20),
-                            Text('Jeff Bezos',
-                                style: TextStyle(color: Colors.white, fontSize: 16)),
-                          ],
-                        ),
-                        textColor: Colors.white,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                      alignment: Alignment.bottomLeft,
-                      width: MediaQuery.of(context).size.width /2,
-                      child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.white)
-                        ),
-                        elevation: 0,
-                        height: 50,
-                        onPressed: () {
-
-                        },
-                        color: Colors.grey,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(FontAwesomeIcons.facebook),
-                            SizedBox(width: 20),
-                            Text('M. Zuckerberg',
-                                style: TextStyle(color: Colors.white, fontSize: 16)),
-                          ],
-                        ),
-                        textColor: Colors.white,
-                      ),
-                    ),
-                  ]
-              ),
-
-
-
-
-
-              Container(
-                padding: EdgeInsets.fromLTRB(25, 25, 8, 8),
-                alignment: Alignment.bottomCenter,
-                child: InkWell(
-                  child: Text("Visit our Website : ReadingRoomCo.com",style: GoogleFonts.roboto(
+                isLoading && uid == null && uid.length == 0
+                    ? Center(
+                  child: CircularProgressIndicator(),
+                ) : postsByCategory(size),
+                Container(
+                  padding: EdgeInsets.fromLTRB(25, 25, 8, 8),
+                  alignment: Alignment.centerLeft,
+                  child: Text("Top Suggestions", style: GoogleFonts.roboto(
                       textStyle: TextStyle(
-                          fontSize: 15,
+                          fontSize: 25,
                           color: Colors.black,
                           fontWeight:
-                          FontWeight.bold),
-                          fontStyle: FontStyle.italic),),
-                  onTap: () {
-                    const url = 'https://readingroomco.com';
-                    launchURL(url);
-                  },
+                          FontWeight.bold)),
+                  ),
                 ),
 
-              ),
+                bookLists.isEmpty ? CircularProgressIndicator() :  new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                        alignment: Alignment.bottomLeft,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 2,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)
+                          ),
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
 
-            ]),
-      ),
+                          },
+                          color: Colors.redAccent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(FontAwesomeIcons.laptop),
+                              SizedBox(width: 20),
+                              Text(bookLists[0].name.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                        alignment: Alignment.bottomLeft,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 2,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)
+                          ),
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
+                            const url = "https://www.gatesnotes.com/About-Bill-Gates/Holiday-Books-2020";
+                            launchURL(url);
+                          },
+                          color: Colors.cyan,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(FontAwesomeIcons.dollarSign),
+                              SizedBox(width: 20),
+                              Text(bookLists[1].name.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ),
+                    ]
+                ),
+
+                bookLists.isEmpty ? CircularProgressIndicator() :  new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                        alignment: Alignment.bottomLeft,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 2,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)
+                          ),
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
+
+                          },
+                          color: Colors.lightGreen,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(FontAwesomeIcons.spaceShuttle),
+                              SizedBox(width: 20),
+                              Text(bookLists[2].name.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                        alignment: Alignment.bottomLeft,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 2,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)
+                          ),
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
+
+                          },
+                          color: Colors.purpleAccent,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(FontAwesomeIcons.crown),
+                              SizedBox(width: 20),
+                              Text(bookLists[3].name.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ),
+                    ]
+                ),
+
+                bookLists.isEmpty ? CircularProgressIndicator() :  new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                        alignment: Alignment.bottomLeft,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 2,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)
+                          ),
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
+
+                          },
+                          color: Colors.blue,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(FontAwesomeIcons.shoppingCart),
+                              SizedBox(width: 20),
+                              Text(bookLists[4].name.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
+                        alignment: Alignment.bottomLeft,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 2,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)
+                          ),
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
+
+                          },
+                          color: Colors.grey,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(FontAwesomeIcons.facebook),
+                              SizedBox(width: 20),
+                              Text(bookLists[5].name.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ),
+                    ]
+                ),
+
+
+                Container(
+                  padding: EdgeInsets.fromLTRB(25, 25, 8, 8),
+                  alignment: Alignment.bottomCenter,
+                  child: InkWell(
+                    child: Text("Visit our Website : ReadingRoomCo.com",
+                      style: GoogleFonts.roboto(
+                          textStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight:
+                              FontWeight.bold),
+                          fontStyle: FontStyle.italic),),
+                    onTap: () {
+                      const url = 'https://readingroomco.com';
+                      launchURL(url);
+                    },
+                  ),
+
+                ),
+
+              ]),
+        ),
       ),
     );
-
   }
-
   Route _createRoute() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => ViewPost(
-        postData: postdata,
-      ),
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          ViewPost(
+            postData: postdata,
+          ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;
         var curve = Curves.ease;
 
         var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -512,6 +559,7 @@ class _HomePage extends State<HomePage> {
       },
     );
   }
+
   Route _createRouteToHistory() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => History(),
@@ -530,6 +578,7 @@ class _HomePage extends State<HomePage> {
       },
     );
   }
+
   Route _createRouteToSendFeedback() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => SendFeedback(),
@@ -548,6 +597,7 @@ class _HomePage extends State<HomePage> {
       },
     );
   }
+
   Route _createRouteToStarred() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => Starred(),
@@ -569,54 +619,66 @@ class _HomePage extends State<HomePage> {
 
   postsByCategory(var size) {
     String api;
-    switch(valueChoose){
+    switch (valueChoose) {
       case "Latest Posts":
         api = "wp-json/wp/v2/posts?_embed";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       case "Fiction" :
         api = "wp-json/wp/v2/posts?_embed&categories=7&per_page=100";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       case "Graphic Novel" :
         api = "wp-json/wp/v2/posts?_embed&categories=196&per_page=100";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       case "Interview" :
         api = "wp-json/wp/v2/posts?_embed&categories=11&per_page=100";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       case "Memoir" :
         api = "wp-json/wp/v2/posts?_embed&categories=12&per_page=100";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       case "Poetry" :
         api = "wp-json/wp/v2/posts?_embed&categories=8&per_page=100";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       case "Review" :
         api = "wp-json/wp/v2/posts?_embed&categories=5&per_page=100";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       case "Essay" :
         api = "wp-json/wp/v2/posts?_embed&categories=10&per_page=100";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       case "Series" :
         api = "wp-json/wp/v2/posts?_embed&categories=194&per_page=100";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       case "K Saraswathi Amma" :
         api = "wp-json/wp/v2/posts?_embed&categories=13&per_page=100";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
       default:
         api = "wp-json/wp/v2/posts?_embed";
-        return isLoading? CircularProgressIndicator() : categoryPostsAsRow(size,api);
+        return isLoading ? CircularProgressIndicator() : categoryPostsAsRow(
+            size, api);
         break;
     }
   }
-  Row categoryPostsAsRow(var size,var api){
+
+  Row categoryPostsAsRow(var size, var api) {
     return new Row(
       children: [
         Flexible(
@@ -681,14 +743,15 @@ class _HomePage extends State<HomePage> {
                             postdata.author = author;
                             Navigator.of(context).push(_createRoute());
                           },
-                          onLongPress: (){
-                            databaseReference.child(uid).child("starred").child(""+postId.toString()).set({
-                              'author' : author.toString(),
-                              'category' : category.toString(),
-                              'content' : content.toString(),
-                              'imageurl' : imageUrl.toString(),
-                              'postid' : postId.toString(),
-                              'title' : convertedTitle.toString(),
+                          onLongPress: () {
+                            databaseReference.child(uid).child("starred").child(
+                                "" + postId.toString()).set({
+                              'author': author.toString(),
+                              'category': category.toString(),
+                              'content': content.toString(),
+                              'imageurl': imageUrl.toString(),
+                              'postid': postId.toString(),
+                              'title': convertedTitle.toString(),
                             });
                             Scaffold.of(context).showSnackBar(SnackBar(
                               content: Text("Added to Starred"),
@@ -754,7 +817,8 @@ class _HomePage extends State<HomePage> {
                                           Container(
                                             padding: EdgeInsets.all(8),
                                             child: Text(
-                                              "Category : " + category.toString(),
+                                              "Category : " +
+                                                  category.toString(),
                                               style: TextStyle(
                                                   fontStyle: FontStyle.italic,
                                                   fontSize: 15),
@@ -792,7 +856,6 @@ class _HomePage extends State<HomePage> {
       ],
     );
   }
-
   void initializeWordpress() {
     // adminName and adminKey is needed only for admin level APIs
     wordPress = wp.WordPress(
@@ -803,57 +866,14 @@ class _HomePage extends State<HomePage> {
     );
   }
 
-  void  launchURL(String url) async {
+  void launchURL(String url) async {
     print("Trying");
     if (await canLaunch(url)) {
-      await launch(url, forceWebView: true, enableJavaScript: true,forceSafariVC: true);
+      await launch(
+          url, forceWebView: true, enableJavaScript: true, forceSafariVC: true);
     } else {
       throw 'Could not launch $url';
     }
   }
 
-  }
-
-// void inputData() {
-//   databaseReferenceForStarred = FirebaseDatabase.instance.reference().child(uid).child("starred");
-//   databaseReferenceForStarred.once().then((DataSnapshot snap)
-//   {
-//     var keys = snap.value.keys;
-//     var data = snap.value;
-//     starredPosts.clear();
-//     for(var individualKey in keys){
-//       String starredPost = data[individualKey]['postid'].toString();
-//       starredPosts.add(starredPost);
-//     }
-//   });
-//   // here you write the codes to input the data into firestore
-//   print("postdata" + postdata.postId.toString());
-//
-// }
-// inputData();
-
-// isFavorite ? IconButton(
-// icon: new Icon(Icons.star),
-// color: Colors.red,
-// onPressed: () {
-// setState(() {
-// isFavorite = !isFavorite;
-//
-// });
-// /* Your code */
-// /* Your code */
-// },
-// ) : IconButton(
-// icon: new Icon(Icons.star_border),
-// onPressed: () {
-// isFavorite = !isFavorite;
-// widget.createState();
-//
-// setState(() {
-//
-// });
-// databaseReference.child(uid).child("starred").child(""+postId.toString()).set({
-// 'imageurl' : imageUrl.toString(),
-// });
-// },
-// )
+}
