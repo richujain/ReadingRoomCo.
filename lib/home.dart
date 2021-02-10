@@ -179,6 +179,15 @@ class _HomePage extends State<HomePage> {
               },
             ),
             ListTile(
+              leading: Icon(Icons.archive),
+              title: Text('Archive'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.star),
               title: Text('Starred'),
               onTap: () {
