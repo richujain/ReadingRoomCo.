@@ -15,6 +15,7 @@ import 'package:reading_room_co/sendfeedback.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reading_room_co/starred.dart';
 import 'package:reading_room_co/viewpost.dart';
+import 'archive.dart';
 import 'wp-api.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'postdata.dart';
@@ -185,6 +186,7 @@ class _HomePage extends State<HomePage> {
                 // Update the state of the app.
                 // ...
                 Navigator.pop(context);
+                Navigator.of(context).push(_createRouteToArchive());
               },
             ),
             ListTile(
@@ -624,6 +626,24 @@ class _HomePage extends State<HomePage> {
   Route _createRouteToStarred() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => Starred(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+  Route _createRouteToArchive() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => Archive(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;
