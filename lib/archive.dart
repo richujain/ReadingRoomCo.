@@ -33,9 +33,13 @@ class _Archive extends State<Archive> {
   bool closeTopContainer = false;
   wp.WordPress wordPress;
   final String url = "https://readingroomco.com/";
-  final String api = "wp-json/wp/v2/posts?_embed";
+  int offset = 0;
+  int currentMax = 10;
+  String api = "wp-json/wp/v2/posts?_embed&per_page=10";
   List wp_posts;
   var postId;
+  List<PostData> posts = [];
+  PostData post;
   PostData postdata = new PostData(
       "loading...", "loading...", "loading...", "loading...", "loading...",
       "loading...");
@@ -46,16 +50,7 @@ class _Archive extends State<Archive> {
   List<String> starredPosts = [];
   DatabaseReference databaseReferenceForStarred;
   String uid;
-  List<BookLists> bookLists = [];
-
-  List colors = [
-    Colors.deepOrangeAccent,
-    Colors.cyan,
-    Colors.lightGreen,
-    Colors.purpleAccent,
-    Colors.blue,
-    Colors.grey,
-  ];
+  ScrollController scrollController;
 
   @override
   void initState() {
@@ -79,8 +74,24 @@ class _Archive extends State<Archive> {
       });
     }
     inputDataOnce();
+
+    // scrollController.addListener(() {
+    //   if(scrollController.position.pixels == scrollController.position.maxScrollExtent){
+    //     print("hello");
+    //     getMoreData();
+    //   }
+    // });
     super.initState();
   }
+
+  nextButtonForMoreData(){
+    currentMax += 10;
+    api = "wp-json/wp/v2/posts?_embed&per_page=10&offset=$currentMax";
+    setState(() {
+
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,18 +99,6 @@ class _Archive extends State<Archive> {
     final Size size = MediaQuery
         .of(context)
         .size;
-    List listItem = [
-      "Latest Posts",
-      "Fiction",
-      "Graphic Novel",
-      "Interview",
-      "Memoir",
-      "Poetry",
-      "Review",
-      "Essay",
-      "Series",
-      "K Saraswathi Amma"
-    ];
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -120,6 +119,84 @@ class _Archive extends State<Archive> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 16, right: 16),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+                new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                        alignment: Alignment.bottomLeft,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 2,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)
+                          ),
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
+
+
+                          },
+                          color: Colors.blue,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(FontAwesomeIcons.arrowCircleLeft),
+                              SizedBox(width: 20),
+                              Text("Previous",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                        alignment: Alignment.bottomLeft,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 2,
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)
+                          ),
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
+                            nextButtonForMoreData();
+                          },
+                          color: Colors.blue,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text("Next",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                              SizedBox(width: 20),
+                              Icon(FontAwesomeIcons.arrowCircleRight),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ),
+                    ]
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Container(
@@ -153,8 +230,9 @@ class _Archive extends State<Archive> {
               if (snapshot.hasData) {
                 return Center(
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height-120, // card height
+                    height: MediaQuery.of(context).size.height-210, // card height
                     child: new ListView.builder(
+                      controller:scrollController,
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         Map wpPost = snapshot.data[index];
@@ -176,6 +254,8 @@ class _Archive extends State<Archive> {
                         var unescape = new HtmlUnescape();
                         var convertedTitle = unescape.convert(title);
                         var content = wpPost['content']['rendered'];
+                        post = new PostData(postId, convertedTitle, author, category, content, imageUrl);
+                        posts.add(post);
 
                         return GestureDetector(
                           onTap: () {
@@ -217,7 +297,7 @@ class _Archive extends State<Archive> {
                                       borderRadius:
                                       BorderRadius.circular(8.0),
                                       child: Image.network(
-                                        imageUrl,
+                                        posts[index].imageurl,
                                       ),
                                     )
                                   //Image.network(imageUrl,fit: BoxFit.contain,)
@@ -226,7 +306,7 @@ class _Archive extends State<Archive> {
                               Container(
                                   padding: EdgeInsets.all(8),
                                   child: AutoSizeText(
-                                    convertedTitle,
+                                    posts[index].title,
                                     style: GoogleFonts.roboto(
                                         textStyle: TextStyle(
                                             fontSize: 20,
@@ -238,7 +318,7 @@ class _Archive extends State<Archive> {
                               Container(
                                 padding: EdgeInsets.all(8),
                                 child: Text(
-                                  "Author : " + author.toString(),
+                                  "Author : " + posts[index].author.toString(),
                                   style: TextStyle(
                                       fontStyle: FontStyle.italic,
                                       fontSize: 15),
@@ -248,7 +328,7 @@ class _Archive extends State<Archive> {
                                 padding: EdgeInsets.all(8),
                                 child: Text(
                                   "Category : " +
-                                      category.toString(),
+                                      posts[index].category.toString(),
                                   style: TextStyle(
                                       fontStyle: FontStyle.italic,
                                       fontSize: 15),
@@ -310,6 +390,12 @@ class _Archive extends State<Archive> {
       adminName: '',
       adminKey: '',
     );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
 
