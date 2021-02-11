@@ -159,11 +159,11 @@ class ViewPost extends StatelessWidget {
                                     }
                                   },
 
-                                  defaultTextStyle: GoogleFonts.roboto(
-                                      fontSize: 18,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal,
-                                      height: 2,),
+                                  defaultTextStyle: GoogleFonts.getFont('Yellowtail',textStyle:TextStyle(fontSize: 18,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.normal,
+                                    height: 2,),
+                                      ),
 
                                 ),
                               ),

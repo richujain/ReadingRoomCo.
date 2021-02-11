@@ -50,7 +50,8 @@ class _Archive extends State<Archive> {
   List<String> starredPosts = [];
   DatabaseReference databaseReferenceForStarred;
   String uid;
-  ScrollController scrollController;
+  StreamBuilder streamBuilder;
+  Future<List> futureData;
 
   @override
   void initState() {
@@ -74,7 +75,7 @@ class _Archive extends State<Archive> {
       });
     }
     inputDataOnce();
-
+    futureData = fetchWpPosts(api);
     // scrollController.addListener(() {
     //   if(scrollController.position.pixels == scrollController.position.maxScrollExtent){
     //     print("hello");
@@ -87,9 +88,11 @@ class _Archive extends State<Archive> {
   nextButtonForMoreData(){
     currentMax += 10;
     api = "wp-json/wp/v2/posts?_embed&per_page=10&offset=$currentMax";
+    var tempFutureData = fetchWpPosts(api);
     setState(() {
-
+      futureData = tempFutureData;
     });
+    print("next is pressed");
   }
 
 
@@ -225,14 +228,13 @@ class _Archive extends State<Archive> {
       children: [
         Flexible(
           child: FutureBuilder(
-            future: fetchWpPosts(api),
+            future: futureData,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return Center(
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height-210, // card height
                     child: new ListView.builder(
-                      controller:scrollController,
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         Map wpPost = snapshot.data[index];
@@ -392,11 +394,7 @@ class _Archive extends State<Archive> {
     );
   }
 
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
+ 
 
 
 }
