@@ -39,23 +39,25 @@ class _StarredState extends State<Starred> {
     databaseReference = FirebaseDatabase.instance.reference().child(uid).child("starred");
     databaseReference.once().then((DataSnapshot snap)
     {
-      var keys = snap.value.keys;
-      var data = snap.value;
-      postList.clear();
-      for(var individualKey in keys){
-        PostData postData = new PostData(
-          data[individualKey]['postid'],
-          data[individualKey]['title'],
-          data[individualKey]['author'],
-          data[individualKey]['category'],
-          data[individualKey]['content'],
-          data[individualKey]['imageurl'],
-        );
-        postList.add(postData);
-      }
-      setState(() {
+      if(snap.value != null){
+        var keys = snap.value.keys;
+        var data = snap.value;
+        postList.clear();
+        for(var individualKey in keys){
+          PostData postData = new PostData(
+            data[individualKey]['postid'],
+            data[individualKey]['title'],
+            data[individualKey]['author'],
+            data[individualKey]['category'],
+            data[individualKey]['content'],
+            data[individualKey]['imageurl'],
+          );
+          postList.add(postData);
+          setState(() {
 
-      });
+          });
+        }
+      }
     });
     return Scaffold(
         appBar: AppBar(
@@ -94,11 +96,12 @@ class _StarredState extends State<Starred> {
       Navigator.of(context).push(_createRoute());
     },
       onLongPress: (){
-
           postList.remove(postdata);
           FirebaseDatabase.instance.reference().child(uid).child("starred").child(postId).remove();
-          print("setState called");
+          if(postList.length == 1){
 
+            Navigator.of(context).pop();
+          }
       },
       child: new Container(
         padding: new EdgeInsets.all(14.0),

@@ -107,7 +107,9 @@ class _ViewPostState extends State<ViewPost> {
                                             borderRadius: BorderRadius.circular(8.0),
                                             child: Image.network(
                                               imageurl,
-                                            ),
+                                                errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                                                  return Text('');
+                                                }),
                                           ),
                                           padding: EdgeInsets.fromLTRB(
                                               8.0, 0.0, 8.0, 0.0),

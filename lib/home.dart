@@ -37,7 +37,6 @@ class _HomePage extends State<HomePage> {
   final String url = "https://readingroomco.com/";
   final String api = "wp-json/wp/v2/posts?_embed";
   List wp_posts;
-  var postId;
   String displayName= "";
   PostData postdata = new PostData(
       "loading...", "loading...", "loading...", "loading...", "loading...",
@@ -774,27 +773,35 @@ class _HomePage extends State<HomePage> {
                       itemBuilder: (BuildContext context, int index) {
                         Map wpPost = snapshot.data[index];
                         var imageUrl;
+                        String title = wpPost['title']['rendered'];
+                        var unescape = new HtmlUnescape();
+                        var convertedTitle = unescape.convert(title);
                         if (snapshot.data[index]["_embedded"]
                         ["wp:featuredmedia"] !=
                             null) {
                           imageUrl = wpPost["_embedded"]["wp:featuredmedia"][0]
                           ["source_url"];
                         } else {
-                          imageUrl =
-                          "https://www.readingroomco.com/wp-content/uploads/2020/12/IMG_3643.jpg";
+                          if(convertedTitle == "Rashtrayana II- Chapter 4- Legend of the East"){
+                            imageUrl = "https://www.readingroomco.com/wp-content/uploads/2020/12/IMG_3643.jpg";
+                          }
+                          else{
+                            print("title image"+convertedTitle);
+                            imageUrl = "";
+                          }
                         }
-                        String title = wpPost['title']['rendered'];
+
                         String category =
                         wpPost['_embedded']['wp:term'][0][0]['name'];
-                        postId = wpPost['id'];
+                        var postId = wpPost['id'];
                         var author = wpPost['_embedded']['author'][0]['name'];
-                        var unescape = new HtmlUnescape();
-                        var convertedTitle = unescape.convert(title);
+
                         var content = wpPost['content']['rendered'];
 
                         return GestureDetector(
                           onTap: () {
                             postdata.postId = postId;
+                            print("postId ontap : "+postdata.postId.toString());
                             postdata.title = convertedTitle;
                             postdata.imageurl = imageUrl;
                             postdata.category = category;
@@ -816,6 +823,7 @@ class _HomePage extends State<HomePage> {
                               content: Text("Added to Starred"),
                               duration: const Duration(seconds: 1),
                             ));
+                            print("title : "+convertedTitle + "Post ID "+ postId.toString());
                           },
                           child: Transform.scale(
                             scale: index == _index ? 1 : 0.95,
@@ -847,6 +855,9 @@ class _HomePage extends State<HomePage> {
                                                   BorderRadius.circular(8.0),
                                                   child: Image.network(
                                                     imageUrl,
+                                                    errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                                                      return Text('');
+                                                    },
                                                   ),
                                                 )
                                               //Image.network(imageUrl,fit: BoxFit.contain,)
