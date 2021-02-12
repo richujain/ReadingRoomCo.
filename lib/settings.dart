@@ -57,7 +57,7 @@ class _SettingsState extends State<Settings> {
       ),
       body: SingleChildScrollView(
           child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
             Column(children: [
@@ -116,6 +116,11 @@ class _SettingsState extends State<Settings> {
                               }).toList(),
                             ),
                           ]));
+                    }
+                    else{
+                      return Container(
+                        child: Text("Something is not right"),
+                      );
                     }
                   }),
               Padding(
