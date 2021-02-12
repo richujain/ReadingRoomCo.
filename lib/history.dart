@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:convert' show utf8;
 import 'dart:math';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -84,68 +85,75 @@ DatabaseReference databaseReference;
       ) );
   }
   Widget PostsUI(String postId, String title, String author, String category, String content, String imageUrl){
-    return new Card(
-      elevation: 10.0,
-      margin:   EdgeInsets.all(15.0),
-      child: new Container(
-        padding: new EdgeInsets.all(14.0),
-        child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            new  Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(
-                  imageUrl,
-                ),
-              ),
-              padding: EdgeInsets.fromLTRB(
-                  8.0, 0.0, 8.0, 0.0),
-              //Image.network(imageUrl,fit: BoxFit.contain,)
-            ),
-            new Container(
-              padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-              child: Text(
-                title,
-                style: GoogleFonts.openSans(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            new Row(
-              mainAxisAlignment: MainAxisAlignment
-                  .spaceBetween,
-              children: [
-                Container(
-                  padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                  child: Text(
-                    "Author : $author",
-                    style: GoogleFonts.openSans(
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.black,
-                    ),
+    return Flexible(
+      child: new Card(
+        elevation: 10.0,
+        margin:   EdgeInsets.all(15.0),
+        child: new Container(
+          padding: new EdgeInsets.all(14.0),
+          child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new  Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    imageUrl,
+                    errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                      return Text('');
+                    },
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                  child: Text(
-                    "Category : $category",
-                    style: GoogleFonts.openSans(
-                      fontSize: 15,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.black,
+                padding: EdgeInsets.fromLTRB(
+                    8.0, 0.0, 8.0, 0.0),
+                //Image.network(imageUrl,fit: BoxFit.contain,)
+              ),
+              new Container(
+                padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                child: AutoSizeText(
+                  title,
+                  style: GoogleFonts.roboto(
+                      textStyle: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight:
+                          FontWeight.bold)),
+                  maxLines: 3,
+                )),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment
+                    .spaceBetween,
+                children: [
+                  Flexible(child: Container(
+                    padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    child: Text(
+                      "Author : $author",
+                      style: GoogleFonts.openSans(
+                        fontSize: 15,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),),
+
+                  Container(
+                    padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    child: Text(
+                      "Category : $category",
+                      style: GoogleFonts.openSans(
+                        fontSize: 15,
+                        fontStyle: FontStyle.italic,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
 
 
 
-          ],
+            ],
+          ),
         ),
       ),
     );

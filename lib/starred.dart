@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:convert' show utf8;
 import 'dart:math';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,9 +54,11 @@ class _StarredState extends State<Starred> {
             data[individualKey]['imageurl'],
           );
           postList.add(postData);
-          setState(() {
+          if(mounted){
+            setState(() {
 
-          });
+            });
+          }
         }
       }
     });
@@ -113,6 +116,9 @@ class _StarredState extends State<Starred> {
                 borderRadius: BorderRadius.circular(8.0),
                 child: Image.network(
                   imageUrl,
+                  errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                    return Text('');
+                  },
                 ),
               ),
               padding: EdgeInsets.fromLTRB(
@@ -121,22 +127,23 @@ class _StarredState extends State<Starred> {
             ),
             new Container(
               padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-              child: Text(
+              child: AutoSizeText(
                 title,
-                style: GoogleFonts.openSans(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  color: Colors.black,
-                ),
-              ),
-            ),
+                style: GoogleFonts.roboto(
+                    textStyle: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight:
+                        FontWeight.bold)),
+                maxLines: 3,
+              )),
             new Row(
               mainAxisAlignment: MainAxisAlignment
                   .spaceBetween,
               children: [
                 Container(
                   padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                  child: Text(
+                  child: AutoSizeText(
                     "Author : $author",
                     style: GoogleFonts.openSans(
                       fontSize: 15,
@@ -147,7 +154,7 @@ class _StarredState extends State<Starred> {
                 ),
                 Container(
                   padding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-                  child: Text(
+                  child: AutoSizeText(
                     "Category : $category",
                     style: GoogleFonts.openSans(
                       fontSize: 15,
