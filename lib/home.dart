@@ -366,8 +366,8 @@ class _HomePage extends State<HomePage> {
                       padding: const EdgeInsets.only(left: 2.0, right: 2.0),
                         shrinkWrap : true,
                         crossAxisCount: 2,
-                      crossAxisSpacing: 4,
-                      mainAxisSpacing: 0,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 10,
                       itemCount: bookLists.length,
                       itemBuilder: (BuildContext context, int index) => new Container(
                           child: Container(
@@ -379,16 +379,11 @@ class _HomePage extends State<HomePage> {
                               child: Column(
                             children: [
                               new Expanded(
-                                child: Column(
-                                  children: [
-                                    new Image.network(
-                                      ""+bookLists[index].icon,fit: BoxFit.fill,
-                                      errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-                                        return Text('Not loaded');
-                                      },
-                                    ),
-                                    new Text(""+bookLists[index].name.toString()),
-                                  ],
+                                child: Image.network(
+                                  ""+bookLists[index].icon,fit: BoxFit.cover,
+                                  errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                                    return Text('Image Unavailable');
+                                  },
                                 ),
                               ),
                     ]),
