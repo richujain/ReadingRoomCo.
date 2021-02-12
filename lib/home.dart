@@ -31,12 +31,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
   bool closeTopContainer = false;
   wp.WordPress wordPress;
   final String url = "https://readingroomco.com/";
   final String api = "wp-json/wp/v2/posts?_embed";
   List wp_posts;
   var postId;
+  String displayName= "";
   PostData postdata = new PostData(
       "loading...", "loading...", "loading...", "loading...", "loading...",
       "loading...");
@@ -61,6 +63,9 @@ class _HomePage extends State<HomePage> {
 
   @override
   void initState() {
+    if(_firebaseAuth.currentUser.displayName != null){
+      displayName = _firebaseAuth.currentUser.displayName;
+    }
     categoryFuture = fetchWpPosts(categoriesApi);
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User user = auth.currentUser;
@@ -154,7 +159,7 @@ class _HomePage extends State<HomePage> {
               child: Container(
                 height: 100.0,
                 child: DrawerHeader(
-                  child: Text('Hello, ' + _firebaseAuth.currentUser.displayName,
+                  child: Text('Hello, ' + displayName,
                     style: GoogleFonts.roboto(
                         textStyle: TextStyle(
                             fontSize: 20,
@@ -254,7 +259,11 @@ class _HomePage extends State<HomePage> {
                 // Update the state of the app.
                 // ...
                 //_signOut();
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/');
                 context.read<AuthenticationService>().signOut();
+
+
               },
             ),
           ],

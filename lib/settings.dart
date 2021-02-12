@@ -57,7 +57,7 @@ class _SettingsState extends State<Settings> {
       ),
       body: SingleChildScrollView(
           child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
             Column(children: [

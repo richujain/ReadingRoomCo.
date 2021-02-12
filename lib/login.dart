@@ -170,6 +170,9 @@ class LoginPage extends StatelessWidget {
                     height: 50,
                     onPressed: () {
                       signInWithGoogle().whenComplete(() {
+                        User currentUser = firebaseAuth.currentUser;
+                        print("current user"+currentUser.toString());
+                        currentUser == null ? print("null login") :
                         Navigator.of(context).popAndPushNamed('/home');
                       });
                     },
@@ -226,6 +229,11 @@ class LoginPage extends StatelessWidget {
   }
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    if (googleSignInAccount == null) {
+      // cancelled login
+      print('Google Signin ERROR! googleUser: null!');
+      return null;
+    }
     final GoogleSignInAuthentication googleSignInAuthentication =
     await googleSignInAccount.authentication;
 
@@ -247,6 +255,7 @@ class LoginPage extends StatelessWidget {
   }
 
   void signOutGoogle() async{
+    FirebaseAuth.instance.signOut();
     await googleSignIn.signOut();
     print("User Sign Out");
   }
