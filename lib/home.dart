@@ -80,7 +80,7 @@ class _HomePage extends State<HomePage> {
             data[individualKey]['name'],
             data[individualKey]['link'],
             data[individualKey]['icon'],
-            data[individualKey]['color'],
+            data[individualKey]['postid'],
           );
           bookLists.add(book);
           setState(() {});
@@ -266,6 +266,7 @@ class _HomePage extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
+        //physics: BouncingScrollPhysics(),
         child: ConstrainedBox(
           constraints: BoxConstraints(),
           child: Column(
@@ -344,7 +345,7 @@ class _HomePage extends State<HomePage> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(25, 25, 8, 8),
+                  padding: EdgeInsets.fromLTRB(25, 25, 8, 20),
                   alignment: Alignment.centerLeft,
                   child: AutoSizeText(
                     "Top Suggestions",
@@ -361,12 +362,14 @@ class _HomePage extends State<HomePage> {
 
                 SizedBox(
                   height: 450,
-                  child: Expanded(
-                    child: new StaggeredGridView.countBuilder(
-                      padding: const EdgeInsets.only(left: 2.0, right: 2.0),
-                        shrinkWrap : true,
+                  child: new StaggeredGridView.countBuilder(
+                      //physics: NeverScrollableScrollPhysics(),
+                      primary: false,
+                        padding: const EdgeInsets.only(left: 5.0, right: 5.0),
                         crossAxisCount: 2,
-                      crossAxisSpacing: 8,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      crossAxisSpacing: 5,
                       mainAxisSpacing: 10,
                       itemCount: bookLists.length,
                       itemBuilder: (BuildContext context, int index) => new Container(
@@ -379,10 +382,15 @@ class _HomePage extends State<HomePage> {
                               child: Column(
                             children: [
                               new Expanded(
-                                child: Image.network(
-                                  ""+bookLists[index].icon,fit: BoxFit.cover,
-                                  errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-                                    return Text('Image Unavailable');
+                                child: InkWell(
+                                  child: Image.network(
+                                    ""+bookLists[index].icon,fit: BoxFit.cover,
+                                    errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                                      return Text('Image Unavailable');
+                                    },
+                                  ),
+                                  onTap:(){
+                                    print(""+bookLists[index].postId.toString());
                                   },
                                 ),
                               ),
@@ -392,7 +400,6 @@ class _HomePage extends State<HomePage> {
                         return StaggeredTile.count(1, index.isEven ? 1.2 : 1.8);
                       }
                     ),
-                  )
                 ),
 
 
@@ -410,223 +417,6 @@ class _HomePage extends State<HomePage> {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-                //
-                //
-                //
-                //
-                //
-                //
-                // bookLists.isEmpty
-                //     ? CircularProgressIndicator()
-                //     : new Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //             Container(
-                //               padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                //               alignment: Alignment.bottomLeft,
-                //               width: MediaQuery.of(context).size.width / 2,
-                //               child: MaterialButton(
-                //                 shape: RoundedRectangleBorder(
-                //                     borderRadius: BorderRadius.circular(18.0),
-                //                     side: BorderSide(color: Colors.white)),
-                //                 elevation: 0,
-                //                 height: 50,
-                //                 onPressed: () {
-                //                   var url = bookLists[0].link.toString();
-                //                   launchURL(url);
-                //                 },
-                //                 color: colors[0],
-                //                 child: Row(
-                //                   mainAxisAlignment: MainAxisAlignment.center,
-                //                   children: <Widget>[
-                //                     Icon(FontAwesomeIcons.laptop),
-                //                     SizedBox(width: 20),
-                //                     AutoSizeText(bookLists[0].name.toString(),
-                //                         style: TextStyle(
-                //                             color: Colors.white, fontSize: 16)),
-                //                   ],
-                //                 ),
-                //                 textColor: Colors.white,
-                //               ),
-                //             ),
-                //             Container(
-                //               padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                //               alignment: Alignment.bottomLeft,
-                //               width: MediaQuery.of(context).size.width / 2,
-                //               child: MaterialButton(
-                //                 shape: RoundedRectangleBorder(
-                //                     borderRadius: BorderRadius.circular(18.0),
-                //                     side: BorderSide(color: Colors.white)),
-                //                 elevation: 0,
-                //                 height: 50,
-                //                 onPressed: () {
-                //                   var url = bookLists[1].link.toString();
-                //                   launchURL(url);
-                //                 },
-                //                 color: colors[1],
-                //                 child: Row(
-                //                   mainAxisAlignment: MainAxisAlignment.center,
-                //                   children: <Widget>[
-                //                     Icon(FontAwesomeIcons.dollarSign),
-                //                     SizedBox(width: 20),
-                //                     Expanded(
-                //                       child: AutoSizeText(
-                //                           bookLists[1].name.toString(),
-                //                           style: TextStyle(
-                //                               color: Colors.white,
-                //                               fontSize: 16)),
-                //                     ),
-                //                   ],
-                //                 ),
-                //                 textColor: Colors.white,
-                //               ),
-                //             ),
-                //           ]),
-                // bookLists.isEmpty
-                //     ? CircularProgressIndicator()
-                //     : new Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //             Container(
-                //               padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                //               alignment: Alignment.bottomLeft,
-                //               width: MediaQuery.of(context).size.width / 2,
-                //               child: MaterialButton(
-                //                 shape: RoundedRectangleBorder(
-                //                     borderRadius: BorderRadius.circular(18.0),
-                //                     side: BorderSide(color: Colors.white)),
-                //                 elevation: 0,
-                //                 height: 50,
-                //                 onPressed: () {
-                //                   var url = bookLists[2].link.toString();
-                //                   launchURL(url);
-                //                 },
-                //                 color: colors[2],
-                //                 child: Row(
-                //                   mainAxisAlignment: MainAxisAlignment.center,
-                //                   children: <Widget>[
-                //                     Icon(FontAwesomeIcons.spaceShuttle),
-                //                     SizedBox(width: 20),
-                //                     Expanded(
-                //                       child: AutoSizeText(
-                //                           bookLists[2].name.toString(),
-                //                           style: TextStyle(
-                //                               color: Colors.white,
-                //                               fontSize: 16)),
-                //                     ),
-                //                   ],
-                //                 ),
-                //                 textColor: Colors.white,
-                //               ),
-                //             ),
-                //             Container(
-                //               padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                //               alignment: Alignment.bottomLeft,
-                //               width: MediaQuery.of(context).size.width / 2,
-                //               child: MaterialButton(
-                //                 shape: RoundedRectangleBorder(
-                //                     borderRadius: BorderRadius.circular(18.0),
-                //                     side: BorderSide(color: Colors.white)),
-                //                 elevation: 0,
-                //                 height: 50,
-                //                 onPressed: () {
-                //                   var url = bookLists[3].link.toString();
-                //                   launchURL(url);
-                //                 },
-                //                 color: colors[3],
-                //                 child: Row(
-                //                   mainAxisAlignment: MainAxisAlignment.center,
-                //                   children: <Widget>[
-                //                     Icon(FontAwesomeIcons.crown),
-                //                     SizedBox(width: 20),
-                //                     Expanded(
-                //                       child: AutoSizeText(
-                //                           bookLists[3].name.toString(),
-                //                           style: TextStyle(
-                //                               color: Colors.white,
-                //                               fontSize: 16)),
-                //                     ),
-                //                   ],
-                //                 ),
-                //                 textColor: Colors.white,
-                //               ),
-                //             ),
-                //           ]),
-                // bookLists.isEmpty
-                //     ? CircularProgressIndicator()
-                //     : new Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //             Container(
-                //               padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                //               alignment: Alignment.bottomLeft,
-                //               width: MediaQuery.of(context).size.width / 2,
-                //               child: MaterialButton(
-                //                 shape: RoundedRectangleBorder(
-                //                     borderRadius: BorderRadius.circular(18.0),
-                //                     side: BorderSide(color: Colors.white)),
-                //                 elevation: 0,
-                //                 height: 50,
-                //                 onPressed: () {
-                //                   var url = bookLists[4].link.toString();
-                //                   launchURL(url);
-                //                 },
-                //                 color: colors[4],
-                //                 child: Row(
-                //                   mainAxisAlignment: MainAxisAlignment.center,
-                //                   children: <Widget>[
-                //                     Icon(FontAwesomeIcons.shoppingCart),
-                //                     SizedBox(width: 20),
-                //                     AutoSizeText(bookLists[4].name.toString(),
-                //                         style: TextStyle(
-                //                             color: Colors.white, fontSize: 16)),
-                //                   ],
-                //                 ),
-                //                 textColor: Colors.white,
-                //               ),
-                //             ),
-                //             Container(
-                //               padding: EdgeInsets.fromLTRB(8, 25, 8, 8),
-                //               alignment: Alignment.bottomLeft,
-                //               width: MediaQuery.of(context).size.width / 2,
-                //               child: MaterialButton(
-                //                 shape: RoundedRectangleBorder(
-                //                     borderRadius: BorderRadius.circular(18.0),
-                //                     side: BorderSide(color: Colors.white)),
-                //                 elevation: 0,
-                //                 height: 50,
-                //                 onPressed: () {
-                //                   var url = bookLists[5].link.toString();
-                //                   launchURL(url);
-                //                 },
-                //                 color: colors[5],
-                //                 child: Row(
-                //                   mainAxisAlignment: MainAxisAlignment.center,
-                //                   children: <Widget>[
-                //                     Icon(FontAwesomeIcons.facebook),
-                //                     SizedBox(width: 20),
-                //                     AutoSizeText(bookLists[5].name.toString(),
-                //                         style: TextStyle(
-                //                             color: Colors.white, fontSize: 16)),
-                //                   ],
-                //                 ),
-                //                 textColor: Colors.white,
-                //               ),
-                //             ),
-                //           ]),
 
               ]),
         ),
@@ -836,6 +626,7 @@ class _HomePage extends State<HomePage> {
                     height: 450, // card height
                     child: PageView.builder(
                       allowImplicitScrolling: true,
+                      physics: BouncingScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       itemCount: snapshot.data.length,
                       controller:
