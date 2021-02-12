@@ -43,6 +43,8 @@ dependencies:
   firebase_core:
   url_launcher: ^5.7.10
   flutter_rating_bar: ^3.2.0+1
+  shared_preferences: ^0.4.3
+
 
 
 

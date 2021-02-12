@@ -12,6 +12,7 @@ import 'package:reading_room_co/booklists.dart';
 import 'package:reading_room_co/history.dart';
 import 'package:reading_room_co/postdata.dart';
 import 'package:reading_room_co/sendfeedback.dart';
+import 'package:reading_room_co/settings.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reading_room_co/starred.dart';
 import 'package:reading_room_co/viewpost.dart';
@@ -238,6 +239,7 @@ class _HomePage extends State<HomePage> {
                 // Update the state of the app.
                 // ...
                 Navigator.pop(context);
+                Navigator.of(context).push(_createRouteToSettings());
               },
             ),
 
@@ -588,6 +590,25 @@ class _HomePage extends State<HomePage> {
   Route _createRouteToHistory() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => History(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
+  Route _createRouteToSettings() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => Settings(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;
