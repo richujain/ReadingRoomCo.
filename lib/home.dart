@@ -801,7 +801,7 @@ class _HomePage extends State<HomePage> {
                         return GestureDetector(
                           onTap: () {
                             postdata.postId = postId;
-                            print("postId ontap : "+postdata.postId.toString());
+                            //print("postId ontap : "+postdata.postId.toString());
                             postdata.title = convertedTitle;
                             postdata.imageurl = imageUrl;
                             postdata.category = category;

@@ -100,9 +100,9 @@ class _StarredState extends State<Starred> {
     },
       onLongPress: (){
           postList.remove(postdata);
+          //print("postlist lenghth"+postList.length.toString());
           FirebaseDatabase.instance.reference().child(uid).child("starred").child(postId).remove();
-          if(postList.length == 1){
-
+          if(postList.length <= 1){
             Navigator.of(context).pop();
           }
       },
