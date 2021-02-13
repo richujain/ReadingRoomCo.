@@ -20,6 +20,7 @@ import 'archive.dart';
 import 'wp-api.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'postdata.dart';
+import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -48,6 +49,9 @@ class _HomePage extends State<HomePage> {
   DatabaseReference databaseReferenceForStarred;
   String uid;
   List<BookLists> bookLists = [];
+  // LinkedScrollControllerGroup _controllers;
+  // ScrollController _singleChildScrollViewController = new ScrollController();
+  // ScrollController _staggeredViewController = new ScrollController();
 
   List colors = [
     Colors.deepOrangeAccent,
@@ -60,6 +64,30 @@ class _HomePage extends State<HomePage> {
 
   @override
   void initState() {
+    //_controllers = LinkedScrollControllerGroup();
+    // _singleChildScrollViewController = _controllers.addAndGet();
+    // _staggeredViewController = _controllers.addAndGet();
+    // _staggeredViewController.addListener(() {
+    //   if (_staggeredViewController.position.atEdge) {
+    //     if (_staggeredViewController.offset <= _staggeredViewController.position.minScrollExtent &&
+    //         !_staggeredViewController.position.outOfRange) {
+    //       setState(() {
+    //         print("Reached top");
+    //         _singleChildScrollViewController.animateTo(
+    //           0.0,
+    //           curve: Curves.linear,
+    //           duration: const Duration(milliseconds: 0),
+    //         );
+    //
+    //
+    //       } );
+    //           }
+    //     else {
+    //       // You're at the bottom.
+    //       print("bottom");
+    //     }
+    //   }
+    // });
     if (_firebaseAuth.currentUser.displayName != null) {
       displayName = _firebaseAuth.currentUser.displayName;
     }
@@ -128,8 +156,6 @@ class _HomePage extends State<HomePage> {
       "Series",
       "K Saraswathi Amma"
     ];
-    final double itemHeight = 450;
-    final double itemWidth = size.width / 2;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -266,7 +292,8 @@ class _HomePage extends State<HomePage> {
         ),
       ),
       body: SingleChildScrollView(
-        //physics: BouncingScrollPhysics(),
+        //controller: _singleChildScrollViewController,
+        physics: BouncingScrollPhysics(),
         child: ConstrainedBox(
           constraints: BoxConstraints(),
           child: Column(
@@ -325,25 +352,7 @@ class _HomePage extends State<HomePage> {
                         child: CircularProgressIndicator(),
                       )
                     : postsByCategory(size),
-                Container(
-                  padding: EdgeInsets.fromLTRB(25, 25, 8, 8),
-                  alignment: Alignment.bottomCenter,
-                  child: InkWell(
-                    child: Text(
-                      "Visit our Website : ReadingRoomCo.com",
-                      style: GoogleFonts.roboto(
-                          textStyle: TextStyle(
-                              fontSize: 15,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                          fontStyle: FontStyle.italic),
-                    ),
-                    onTap: () {
-                      const url = 'https://readingroomco.com';
-                      launchURL(url);
-                    },
-                  ),
-                ),
+
                 Container(
                   padding: EdgeInsets.fromLTRB(25, 25, 8, 20),
                   alignment: Alignment.centerLeft,
@@ -360,15 +369,14 @@ class _HomePage extends State<HomePage> {
 
 
 
-                SizedBox(
-                  height: 450,
+                Container(
                   child: new StaggeredGridView.countBuilder(
-                      //physics: NeverScrollableScrollPhysics(),
+                      physics: NeverScrollableScrollPhysics(),
+                    //controller: _staggeredViewController,
                       primary: false,
                         padding: const EdgeInsets.only(left: 5.0, right: 5.0),
                         crossAxisCount: 2,
                       shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
                       crossAxisSpacing: 5,
                       mainAxisSpacing: 10,
                       itemCount: bookLists.length,
@@ -402,6 +410,26 @@ class _HomePage extends State<HomePage> {
                     ),
                 ),
 
+
+                Container(
+                  padding: EdgeInsets.fromLTRB(25, 25, 8, 8),
+                  alignment: Alignment.bottomCenter,
+                  child: InkWell(
+                    child: Text(
+                      "Visit our Website : ReadingRoomCo.com",
+                      style: GoogleFonts.roboto(
+                          textStyle: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                          fontStyle: FontStyle.italic),
+                    ),
+                    onTap: () {
+                      const url = 'https://readingroomco.com';
+                      launchURL(url);
+                    },
+                  ),
+                ),
 
 
 
