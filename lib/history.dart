@@ -78,6 +78,7 @@ DatabaseReference databaseReference;
       body: Container(
           child: postList.length == 0 ? new Text("Nothing To Display!") : new ListView.builder(
             itemCount: postList.length,
+            physics: BouncingScrollPhysics(),
             itemBuilder: (_, index){
               return PostsUI(postList[index].postId.toString(), postList[index].title, postList[index].author, postList[index].category, postList[index].content, postList[index].imageurl);
             },

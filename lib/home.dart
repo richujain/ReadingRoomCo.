@@ -398,7 +398,6 @@ class _HomePage extends State<HomePage> {
                                     },
                                   ),
                                   onTap:(){
-                                    print(""+bookLists[index].postId.toString());
                                   },
                                 ),
                               ),
