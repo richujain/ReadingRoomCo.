@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.richu.reading_room_co">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
    <application
         android:label="reading_room_co"
         android:icon="@mipmap/ic_launcher"

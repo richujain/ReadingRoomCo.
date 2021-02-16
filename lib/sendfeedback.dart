@@ -45,7 +45,8 @@ class _SendFeedbackState extends State<SendFeedback> {
         elevation: 0,
       ),
       body: SingleChildScrollView(
-          child: Padding(
+        physics: BouncingScrollPhysics(),
+        child: Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(

@@ -13,6 +13,7 @@ import 'package:reading_room_co/history.dart';
 import 'package:reading_room_co/postdata.dart';
 import 'package:reading_room_co/sendfeedback.dart';
 import 'package:reading_room_co/settings.dart';
+import 'package:reading_room_co/submission.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reading_room_co/starred.dart';
 import 'package:reading_room_co/viewpost.dart';
@@ -124,16 +125,18 @@ class _HomePage extends State<HomePage> {
       databaseReferenceForStarred =
           FirebaseDatabase.instance.reference().child(uid).child("starred");
       databaseReferenceForStarred.once().then((DataSnapshot snap) {
-        if(snap.value != null && snap.value.keys){
-        var keys = snap.value.keys;
-        var data = snap.value;
-        //starredPosts.clear();
-        for (var individualKey in keys) {
-          String starredPost = data[individualKey]['imageurl'].toString();
-          starredPosts.add(starredPost);
+
+        if(snap.value.keys != null){
+          var keys = snap.value.keys;
+          var data = snap.value;
+          //starredPosts.clear();
+          for (var individualKey in keys) {
+            String starredPost = data[individualKey]['imageurl'].toString();
+            starredPosts.add(starredPost);
+          }
+          setState(() {});
         }
-        setState(() {});
-      }});
+      });
     }
 
     inputDataOnce();
@@ -237,6 +240,16 @@ class _HomePage extends State<HomePage> {
                 // ...
                 Navigator.pop(context);
                 Navigator.of(context).push(_createRouteToHistory());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.rate_review),
+              title: Text('Submission'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+                Navigator.of(context).push(_createRouteToSubmission());
               },
             ),
 
@@ -490,6 +503,25 @@ class _HomePage extends State<HomePage> {
       },
     );
   }
+  Route _createRouteToSubmission() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => Submission(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
 
   Route _createRouteToSettings() {
     return PageRouteBuilder(
@@ -672,23 +704,14 @@ class _HomePage extends State<HomePage> {
                           imageUrl = wpPost["_embedded"]["wp:featuredmedia"][0]
                               ["source_url"];
                         } else {
-                          if (convertedTitle ==
-                              "Rashtrayana II- Chapter 4- Legend of the East") {
-                            imageUrl =
-                                "https://www.readingroomco.com/wp-content/uploads/2020/12/IMG_3643.jpg";
-                          } else {
-                            print("title image" + convertedTitle);
-                            imageUrl = "";
-                          }
+                          imageUrl = null;
                         }
 
                         String category =
                             wpPost['_embedded']['wp:term'][0][0]['name'];
                         var postId = wpPost['id'];
                         var author = wpPost['_embedded']['author'][0]['name'];
-
                         var content = wpPost['content']['rendered'];
-
                         return GestureDetector(
                           onTap: () {
                             postdata.postId = postId;
@@ -750,14 +773,7 @@ class _HomePage extends State<HomePage> {
                                             child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(8.0),
-                                          child: Image.network(
-                                            imageUrl,
-                                            errorBuilder: (BuildContext context,
-                                                Object exception,
-                                                StackTrace stackTrace) {
-                                              return Text('');
-                                            },
-                                          ),
+                                          child: returnImage(imageUrl),
                                         )
                                             //Image.network(imageUrl,fit: BoxFit.contain,)
                                             ),
@@ -842,5 +858,25 @@ class _HomePage extends State<HomePage> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+}
+
+returnImage(imageUrl) {
+  if(imageUrl == null) {
+    return Image.asset(
+      'assets/images/app_logo.jpg',
+      height: 100,
+      width: 100,
+    );
+  }
+  else{
+    return Image.network(
+      imageUrl,
+      errorBuilder: (BuildContext context,
+          Object exception,
+          StackTrace stackTrace) {
+        return Text('');
+      },
+    );
   }
 }
