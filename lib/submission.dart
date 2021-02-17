@@ -14,19 +14,14 @@ import 'package:http/http.dart' as http;
 import 'package:reading_room_co/history.dart';
 import 'package:reading_room_co/postdata.dart';
 import 'package:reading_room_co/submissiondata.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:reading_room_co/starred.dart';
-import 'package:reading_room_co/viewpost.dart';
-import 'GoogleAuthClient.dart';
 import 'wp-api.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'postdata.dart';
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:googleapis/drive/v3.dart' as drive;
-import 'package:google_sign_in/google_sign_in.dart' as signIn;
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/scheduler.dart';
+
 
 
 
@@ -52,6 +47,8 @@ class _SubmissionState extends State<Submission> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   String datetime = DateTime.now().toString();
   String name,description,title;
+  String headShotdownloadUrl;
+  String documentDownloadUrl;
   @override
   Widget build(BuildContext context) {
     if (_firebaseAuth.currentUser.displayName != null) {
@@ -311,24 +308,15 @@ class _SubmissionState extends State<Submission> {
                              name = nameController.text;
                              description = descriptionController.text;
                              title = titleController.text;
+                              final myFuture = uploadToFirebaseStorage(uid,emailForPath,name,description,title,datetime,genre);
+                              myFuture.then((value) => (downloadUrl){
+                                print("inside then"+downloadUrl[0] + "::::" + downloadUrl[1]);
+                            });
 
-                             // Future<String> headShotdownloadUrl = uploadHeadshotToFirebaseStorage();
-                             // Future<String> documentDownloadUrl = uploadDocumentToFirebaseStorage();
-                             String headShotdownloadUrl = await uploadHeadshotToFirebaseStorage();
-                             String documentDownloadUrl = await uploadDocumentToFirebaseStorage();
 
 
-                             final databaseReference = FirebaseDatabase.instance.reference();
-                             databaseReference.child(uid).child("submission").push().set({
-                               'email' : emailForPath,
-                               'name' : name,
-                               'description' : description,
-                               'title' : title,
-                               'datetime' : datetime,
-                               'genre' : genre,
-                               'headshotdownloadurl' : headShotdownloadUrl,
-                               'documentdownloadurl' : documentDownloadUrl,
-                             }).then((value) => Navigator.pop(context));
+
+
 
 
                           },
@@ -432,37 +420,47 @@ class _SubmissionState extends State<Submission> {
         }
     );
   }
-  Future<String> uploadHeadshotToFirebaseStorage() async{
+   uploadToFirebaseStorage(uid,emailForPath,name,description,title,datetime,genre) async{
 
     final _firebaseStorage = FirebaseStorage.instance;
     var file = File(headShot.path);
     if (headShot != null){
       //Upload to Firebase
       var snapshot = await _firebaseStorage.ref()
-          .child(emailForPath).child(datetime)
+          .child(emailForPath+"/"+datetime+"/image")
           .putFile(file);
-      var downloadUrl = await snapshot.ref.getDownloadURL();
-      return downloadUrl;
+      headShotdownloadUrl = await snapshot.ref.getDownloadURL();
+
+
+      var fileDocument = File(document.path);
+      if (document != null){
+        //Upload to Firebase
+        var snapshot = await _firebaseStorage.ref()
+            .child(emailForPath+"/"+datetime+"/document")
+            .putFile(fileDocument);
+        documentDownloadUrl = await snapshot.ref.getDownloadURL();
+
+        final databaseReference = FirebaseDatabase.instance.reference();
+        databaseReference.child(uid).child("submission").push().set({
+          'email' : emailForPath,
+          'name' : name,
+          'description' : description,
+          'title' : title,
+          'datetime' : datetime,
+          'genre' : genre,
+          'headshotdownloadurl' : headShotdownloadUrl,
+          'documentdownloadurl' : documentDownloadUrl,
+        }).then((value) => Navigator.pop(context));
+
+
+
+      } else {
+        print('No Document Path Received');
+      }
+
     } else {
       print('No Image Path Received');
     }
-  }
-  Future<String> uploadDocumentToFirebaseStorage() async{
-
-    final _firebaseStorage = FirebaseStorage.instance;
-    var file = File(document.path);
-    if (document != null){
-      //Upload to Firebase
-      var snapshot = await _firebaseStorage.ref()
-          .child(emailForPath).child(datetime)
-          .putFile(file);
-      var downloadUrl = await snapshot.ref.getDownloadURL();
-      return downloadUrl;
-    } else {
-      print('No Document Path Received');
-      return "No Document Path Received";
-    }
-
   }
 
 
