@@ -26,6 +26,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:google_sign_in/google_sign_in.dart' as signIn;
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 
 class Submission extends StatefulWidget {
@@ -37,9 +39,24 @@ class Submission extends StatefulWidget {
 class _SubmissionState extends State<Submission> {
   String apiKey = "AIzaSyB3FpKTDc5T8_T_x_aX0VqlBBK1JUHnRYY";
   SubmissionData submissionData = new SubmissionData();
-  static const url = "https://docs.google.com/forms/d/e/1FAIpQLSfkOLT1DIbPY1h8psNZvcp9qmoAoidh6LOdUNbW59WXwzJiEQ/viewform";
+  String genre;
+  String emailForPath;
+
+  File headShot, document;
+  final picker = ImagePicker();
+  final emailController = TextEditingController();
+  final nameController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final titleController = TextEditingController();
+  final genreController = TextEditingController();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  String datetime = DateTime.now().toString();
+  String name,description,title;
   @override
   Widget build(BuildContext context) {
+    if (_firebaseAuth.currentUser.displayName != null) {
+      emailForPath = _firebaseAuth.currentUser.email;
+    }
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       appBar: AppBar(
@@ -105,6 +122,178 @@ class _SubmissionState extends State<Submission> {
                             ),
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 8.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey, width: 1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              _showPicker(context);
+                            },
+                            child: CircleAvatar(
+                              radius: 55,
+                              backgroundColor: Color(0xffFDCF09),
+                              child: headShot != null
+                                  ? ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.file(
+                                  headShot,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.fitHeight,
+                                ),
+                              )
+                                  : Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(50)),
+                                width: 100,
+                                height: 100,
+                                child: Icon(
+                                  Icons.camera_alt,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        TextFormField(
+                          onSaved: (val) => submissionData.email = val,
+                          decoration: InputDecoration(
+                            labelText: 'Email Address',
+                            icon: Icon(Icons.account_circle),
+                          ),
+                          controller: emailController,
+                          validator: (value) {
+                            if (value.isEmpty) return "This form value must be filled";
+                            return null;
+                          },
+                          autovalidate: true,
+                        ),
+
+                        TextFormField(
+                          onSaved: (val) => submissionData.name = val,
+                          decoration: InputDecoration(
+                            labelText: 'Name',
+                            icon: Icon(Icons.contacts),
+                          ),
+                          controller: nameController,
+                          keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.sentences,
+                          validator: (value) {
+                            if (value.isEmpty) return "This form value must be filled";
+                            return null;
+                          },
+                        ),
+
+                        TextFormField(
+                          onSaved: (val) => submissionData.email = val,
+                          decoration: InputDecoration(
+                            labelText: 'Your Short Bio',
+                            icon: Icon(Icons.description),
+                          ),
+                          controller: descriptionController,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.sentences,
+                          validator: (value) {
+                            if (value.isEmpty) return "This form value must be filled";
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          onSaved: (val) => submissionData.email = val,
+                          decoration: InputDecoration(
+                            labelText: 'Title',
+                            icon: Icon(Icons.title),
+                          ),
+                          controller: titleController,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.sentences,
+                          validator: (value) {
+                            if (value.isEmpty) return "This form value must be filled";
+                            return null;
+                          },
+                        ),
+                        DropdownButtonFormField<String>(
+                          onSaved: (val) => submissionData.genre = val,
+                          value: genre,
+                          items: [
+                            'Essay','Fiction','Interview','Poetry','Review','Memoir'
+                          ].map<DropdownMenuItem<String>>(
+                                (String val) {
+                              return DropdownMenuItem(
+                                child: Text(val),
+                                value: val,
+                              );
+                            },
+                          ).toList(),
+                          onChanged: (val) {
+                            setState(() {
+                              genre = val;
+                            });
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Genre',
+                            icon: Icon(Icons.category),
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) return "This form value must be filled";
+                            return null;
+                          },
+                        ),
+
+
+
+
+
+                        SizedBox(height: 30,),
+                        MaterialButton(
+                          padding: EdgeInsets.all(8.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.white)),
+                          elevation: 0,
+                          minWidth: double.maxFinite,
+                          height: 50,
+                          onPressed: () async {
+
+                            FilePickerResult result = await FilePicker.platform.pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['jpg', 'pdf', 'doc'],
+                            );
+
+                            if(result != null) {
+                              document = File(result.files.single.path);
+                            } else {
+                              // User canceled the picker
+                            }
+
+
+                          },
+                          color: Colors.green,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(FontAwesomeIcons.file),
+                              SizedBox(width: 10,),
+                              Text('Attach File',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                            ],
+                          ),
+                          textColor: Colors.white,
+                        ),
+                        SizedBox(height: 30,),
+
+
+
                         MaterialButton(
                           padding: EdgeInsets.all(8.0),
                           shape: RoundedRectangleBorder(
@@ -114,14 +303,40 @@ class _SubmissionState extends State<Submission> {
                           elevation: 0,
                           minWidth: double.maxFinite,
                           height: 50,
-                          onPressed: ()  {
-                            launchURL(url);
+                          onPressed: () async {
+                            final FirebaseAuth auth = FirebaseAuth.instance;
+                            final User user = auth.currentUser;
+                            final uid = user.uid;
+                             emailForPath = emailController.text;
+                             name = nameController.text;
+                             description = descriptionController.text;
+                             title = titleController.text;
+
+                             // Future<String> headShotdownloadUrl = uploadHeadshotToFirebaseStorage();
+                             // Future<String> documentDownloadUrl = uploadDocumentToFirebaseStorage();
+                             String headShotdownloadUrl = await uploadHeadshotToFirebaseStorage();
+                             String documentDownloadUrl = await uploadDocumentToFirebaseStorage();
+
+
+                             final databaseReference = FirebaseDatabase.instance.reference();
+                             databaseReference.child(uid).child("submission").push().set({
+                               'email' : emailForPath,
+                               'name' : name,
+                               'description' : description,
+                               'title' : title,
+                               'datetime' : datetime,
+                               'genre' : genre,
+                               'headshotdownloadurl' : headShotdownloadUrl,
+                               'documentdownloadurl' : documentDownloadUrl,
+                             }).then((value) => Navigator.pop(context));
+
+
                           },
                           color: Colors.blue,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text('Click Here to Open Submission Form',
+                              Text('Submit',
                                   style: TextStyle(color: Colors.white, fontSize: 16)),
                             ],
                           ),
@@ -168,15 +383,88 @@ class _SubmissionState extends State<Submission> {
       ),
     );
   }
-  void launchURL(String url) async {
-    print("Trying");
-    if (await canLaunch(url)) {
-      await launch(url,
-          forceWebView: true, enableJavaScript: true, forceSafariVC: true);
+  _imgFromCamera() async {
+    File image = await ImagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 50
+    );
+
+    setState(() {
+      headShot = image;
+    });
+  }
+
+  _imgFromGallery() async {
+    File image = await  ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50
+    );
+
+    setState(() {
+      headShot = image;
+    });
+  }
+  void _showPicker(context) {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext bc) {
+          return SafeArea(
+            child: Container(
+              child: new Wrap(
+                children: <Widget>[
+                  new ListTile(
+                      leading: new Icon(Icons.photo_library),
+                      title: new Text('Photo Library'),
+                      onTap: () {
+                        _imgFromGallery();
+                        Navigator.of(context).pop();
+                      }),
+                  new ListTile(
+                    leading: new Icon(Icons.photo_camera),
+                    title: new Text('Camera'),
+                    onTap: () {
+                      _imgFromCamera();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+  Future<String> uploadHeadshotToFirebaseStorage() async{
+
+    final _firebaseStorage = FirebaseStorage.instance;
+    var file = File(headShot.path);
+    if (headShot != null){
+      //Upload to Firebase
+      var snapshot = await _firebaseStorage.ref()
+          .child(emailForPath).child(datetime)
+          .putFile(file);
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
     } else {
-      throw 'Could not launch $url';
+      print('No Image Path Received');
     }
   }
+  Future<String> uploadDocumentToFirebaseStorage() async{
+
+    final _firebaseStorage = FirebaseStorage.instance;
+    var file = File(document.path);
+    if (document != null){
+      //Upload to Firebase
+      var snapshot = await _firebaseStorage.ref()
+          .child(emailForPath).child(datetime)
+          .putFile(file);
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } else {
+      print('No Document Path Received');
+      return "No Document Path Received";
+    }
+
+  }
+
 
 
   }

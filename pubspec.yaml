@@ -49,13 +49,12 @@ dependencies:
   linked_scroll_controller: ^0.1.2
   file_picker: ^2.1.6
   firebase_analytics:
+  firebase_storage: any
   image_picker: ^0.6.7+4
   flutter_secure_storage: ^3.2.1
   path: ^1.6.4
   googleapis: any
   googleapis_auth: any
-
-
 
 
 

@@ -33,11 +33,9 @@ class _SettingsState extends State<Settings> {
   List<String> googleFonts = [
     'Roboto',
     'Open Sans',
-    'Helvetica',
     'Montserrat',
-    'Avenir',
     'Yellowtail',
-    'Stalinist One'
+    'Baskervville'
   ];
 
   @override
