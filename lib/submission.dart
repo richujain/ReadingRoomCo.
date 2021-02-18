@@ -172,7 +172,7 @@ class _SubmissionState extends State<Submission> {
                             if (value.isEmpty) return "This form value must be filled";
                             return null;
                           },
-                          autovalidate: true,
+                          autovalidateMode: AutovalidateMode.always,
                         ),
 
                         TextFormField(

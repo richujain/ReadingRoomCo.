@@ -42,23 +42,31 @@ DatabaseReference databaseReference;
     inputData();
     databaseReference.once().then((DataSnapshot snap)
     {
-      var keys = snap.value.keys;
-      var data = snap.value;
-      postList.clear();
-      for(var individualKey in keys){
-        PostData postData = new PostData(
-          data[individualKey]['postid'],
-          data[individualKey]['title'],
-          data[individualKey]['author'],
-          data[individualKey]['category'],
-          data[individualKey]['content'],
-          data[individualKey]['imageurl'],
-        );
-        postList.add(postData);
-      }
-      setState(() {
 
-      });
+      try{
+        var keys = snap.value.keys;
+        var data = snap.value;
+        postList.clear();
+        for(var individualKey in keys){
+          PostData postData = new PostData(
+            data[individualKey]['postid'],
+            data[individualKey]['title'],
+            data[individualKey]['author'],
+            data[individualKey]['category'],
+            data[individualKey]['content'],
+            data[individualKey]['imageurl'],
+          );
+          postList.add(postData);
+        }
+        setState(() {
+
+        });
+      }
+      catch(e){
+        print(e);
+      }
+
+
     });
   }
 

@@ -15,34 +15,47 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
-      routes: <String, WidgetBuilder>{
-        '/home' : (BuildContext context) => new HomePage()
+      initialRoute: '/',
+      routes: {
+        '/home': (context) => HomePage(),
       },
       home: LoginPage(),
     );
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
+  bool isLoading = false;
   final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: ConstrainedBox(
           constraints: BoxConstraints(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              child: Stack(
+              child: isLoading ? CircularProgressIndicator() : Stack(
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
@@ -86,10 +99,10 @@ class LoginPage extends StatelessWidget {
               padding: EdgeInsets.only(top: 50.0,left: 20.0, right: 20.0),
               child: Column(
                 children: <Widget>[
-                  TextField(
+                  TextFormField(
                     controller: emailController,
                     decoration: InputDecoration(
-                        labelText: 'EMAIL',
+                        labelText: 'Email',
                         labelStyle: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.bold,
@@ -99,12 +112,17 @@ class LoginPage extends StatelessWidget {
                             borderSide: BorderSide(color: Colors.green)
                         )
                     ),
+                    validator: (value) {
+                      if (value.isEmpty) return "This form value must be filled";
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.always,
                   ),
                   SizedBox(height: 20),
-                  TextField(
+                  TextFormField(
                     controller: passwordController,
                     decoration: InputDecoration(
-                        labelText: 'PASSWORD',
+                        labelText: 'Password',
                         labelStyle: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.bold,
@@ -114,6 +132,11 @@ class LoginPage extends StatelessWidget {
                             borderSide: BorderSide(color: Colors.green)
                         )
                     ),
+                    validator: (value) {
+                      if (value.isEmpty) return "This form value must be filled";
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.always,
                     obscureText: true,
                   ),
                   SizedBox(height: 20),
@@ -140,15 +163,23 @@ class LoginPage extends StatelessWidget {
                       elevation: 7.0,
                       child: GestureDetector(
                         onTap: (){
+                          setState(() {
+                            isLoading = true;
+                          });
                           context.read<AuthenticationService>().signIn(
                             email: emailController.text.trim(),
                             password: passwordController.text.trim(),
-                          );
+                          ).whenComplete(() {
+                            setState(() {
+                              isLoading = false;
+                              Navigator.of(context).popAndPushNamed('/home');
+                            });
+                          });
                         },
 
                         child: Center(
                           child: Text(
-                            'LOGIN',
+                            'Login',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -206,7 +237,9 @@ class LoginPage extends StatelessWidget {
                   SizedBox(width: 5.0),
                   InkWell(
                     onTap: (){
-                      //Navigator.of(context).pushNamed('/signup');
+                      //Navigator.popAndPushNamed(context, '/register');
+                      Route route = MaterialPageRoute(builder: (context) => RegisterPage());
+                      Navigator.push(context, route);
                     },
                     child: Text(
                       'Register',
@@ -227,6 +260,7 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
+
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     if (googleSignInAccount == null) {
@@ -259,5 +293,251 @@ class LoginPage extends StatelessWidget {
     await googleSignIn.signOut();
     print("User Sign Out");
   }
+}
+class RegisterPage extends StatefulWidget {
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
 
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController passwordController = TextEditingController();
+
+  final TextEditingController displayNameController = TextEditingController();
+
+  bool isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      body: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                child: isLoading? CircularProgressIndicator() : Stack(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
+                      child: Center(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Image.asset(
+                              'assets/images/app_logo.jpg',
+                              height: 100,
+                              width: 100,
+                            ),
+                          )
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(0.0, 215.0, 30.0, 0.0),
+                      child: Center(
+                          child: Text(
+                            'Reading Room Co',
+                            style: GoogleFonts.yellowtail(
+                              textStyle: TextStyle(color: Colors.black, fontSize: 50,fontWeight: FontWeight.bold),
+                            ),
+                          )
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(345.0, 195.0, 0.0, 0.0),
+                      child: Text(
+                        '.',
+                        style: TextStyle(
+                          fontSize: 80,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.only(top: 50.0,left: 20.0, right: 20.0),
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      controller: displayNameController,
+                      decoration: InputDecoration(
+                          labelText: 'Display Name',
+                          labelStyle: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green)
+                          )
+                      ),
+                      validator: (value) {
+                        if (value.isEmpty) return "This form value must be filled";
+                        return null;
+                      },
+                      autovalidateMode: AutovalidateMode.always,
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green)
+                          )
+                      ),
+                      validator: (value) {
+                        if (value.isEmpty) return "This form value must be filled";
+                        return null;
+                      },
+                      autovalidateMode: AutovalidateMode.always,
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green)
+                          )
+                      ),
+                      obscureText: true,
+                    ),
+                    SizedBox(height: 40),
+                    Container(
+                      height: 50.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        color: Colors.green,
+                        elevation: 7.0,
+                        child: GestureDetector(
+                          onTap: (){
+
+                            _createUser(context);
+
+                          },
+
+                          child: Center(
+                            child: Text(
+                              'Register',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat'
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 30.0),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20.0),
+              Container(
+                padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Already Registered?',
+                      style: TextStyle(
+                          fontFamily: 'Montserrat'
+                      ),
+                    ),
+                    SizedBox(width: 5.0),
+                    InkWell(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _createUser(context) async{
+    setState(() {
+      isLoading = true;
+    });
+    String displayName = displayNameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+    try {
+      await firebaseAuth.createUserWithEmailAndPassword(
+        email: email.toString(),
+        password: password.toString(),
+      ).whenComplete(() async {
+        User currentUser = firebaseAuth.currentUser;
+        await currentUser.reload().whenComplete(() {
+          currentUser.updateProfile(displayName: displayName);
+          setState(() {
+            isLoading = false;
+          });
+          currentUser == null ? print("null login") :
+          context.read<AuthenticationService>().signOut();
+          Navigator.of(context).pop();
+        });
+
+      });
+
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        setState(() {
+          isLoading = false;
+        });
+        print('The password provided is too weak.');
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("The password provided is too weak"),
+          duration: const Duration(seconds: 1),
+        ));
+      } else if (e.code == 'email-already-in-use') {
+        setState(() {
+          isLoading = false;
+        });
+        print('The account already exists for that email.');
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text("The account already exists for that email."),
+          duration: const Duration(seconds: 1),
+        ));
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print(e);
+    }
+
+  }
 }

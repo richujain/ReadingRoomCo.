@@ -65,30 +65,7 @@ class _HomePage extends State<HomePage> {
 
   @override
   void initState() {
-    //_controllers = LinkedScrollControllerGroup();
-    // _singleChildScrollViewController = _controllers.addAndGet();
-    // _staggeredViewController = _controllers.addAndGet();
-    // _staggeredViewController.addListener(() {
-    //   if (_staggeredViewController.position.atEdge) {
-    //     if (_staggeredViewController.offset <= _staggeredViewController.position.minScrollExtent &&
-    //         !_staggeredViewController.position.outOfRange) {
-    //       setState(() {
-    //         print("Reached top");
-    //         _singleChildScrollViewController.animateTo(
-    //           0.0,
-    //           curve: Curves.linear,
-    //           duration: const Duration(milliseconds: 0),
-    //         );
-    //
-    //
-    //       } );
-    //           }
-    //     else {
-    //       // You're at the bottom.
-    //       print("bottom");
-    //     }
-    //   }
-    // });
+
     if (_firebaseAuth.currentUser.displayName != null) {
       displayName = _firebaseAuth.currentUser.displayName;
     }
@@ -112,7 +89,11 @@ class _HomePage extends State<HomePage> {
             data[individualKey]['postid'],
           );
           bookLists.add(book);
-          setState(() {});
+          if (this.mounted) {
+            setState(() {
+              // Your state change code goes here
+            });
+          }
         }
         for (var i = 0; i < 6; i++) {
           print("" + bookLists[5].name);
@@ -121,22 +102,30 @@ class _HomePage extends State<HomePage> {
     }
 
     fetchBookRecommendation();
+
     void inputDataOnce() {
       databaseReferenceForStarred =
           FirebaseDatabase.instance.reference().child(uid).child("starred");
       databaseReferenceForStarred.once().then((DataSnapshot snap) {
 
-        if(snap.value.keys != null){
-          var keys = snap.value.keys;
-          var data = snap.value;
-          //starredPosts.clear();
-          for (var individualKey in keys) {
-            String starredPost = data[individualKey]['imageurl'].toString();
-            starredPosts.add(starredPost);
+        try{
+          if(snap.value.keys != null){
+            var keys = snap.value.keys;
+            var data = snap.value;
+            //starredPosts.clear();
+            for (var individualKey in keys) {
+              String starredPost = data[individualKey]['imageurl'].toString();
+              starredPosts.add(starredPost);
+            }
+            setState(() {});
           }
-          setState(() {});
+        }catch(e){
+          print(e);
         }
-      });
+
+      }
+
+      );
     }
 
     inputDataOnce();
