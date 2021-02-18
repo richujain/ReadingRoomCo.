@@ -51,19 +51,17 @@ class _LoginPageState extends State<LoginPage> {
         physics: BouncingScrollPhysics(),
         child: ConstrainedBox(
           constraints: BoxConstraints(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              child: isLoading ? new Container(
-        width: MediaQuery.of(context).size.width,//70.0,
+        child: isLoading? new Container(
+          width: MediaQuery.of(context).size.width,//70.0,
           height: MediaQuery.of(context).size.height, //70.0,
           child: new Padding(
               padding: const EdgeInsets.all(5.0),
               child: new Center(child: new CircularProgressIndicator())),
-        )
-
-                  : Stack(
+        ): Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              child: Stack(
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
@@ -293,22 +291,7 @@ class _LoginPageState extends State<LoginPage> {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
-        ).whenComplete(() {
-          FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-          if(firebaseAuth.currentUser.displayName!=null){
-            setState(() {
-              isLoading = false;
-            });
-            Navigator.of(context).popAndPushNamed('/home');
-          }
-          else{
-            setState(() {
-              isLoading = false;
-            });
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Login Failed."),duration: const Duration(seconds: 1),));
-          }
-
-        });
+        );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           print('No user found for that email.');
@@ -342,17 +325,17 @@ class _RegisterPageState extends State<RegisterPage> {
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(),
-          child: Column(
+          child: isLoading? new Container(
+            width: MediaQuery.of(context).size.width,//70.0,
+            height: MediaQuery.of(context).size.height, //70.0,
+            child: new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: new Center(child: new CircularProgressIndicator())),
+          ): Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                child: isLoading? new Container(
-          width: MediaQuery.of(context).size.width,//70.0,
-          height: MediaQuery.of(context).size.height, //70.0,
-          child: new Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: new Center(child: new CircularProgressIndicator())),
-        ): Stack(
+                child: Stack(
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.fromLTRB(15.0, 110.0, 0.0, 0.0),
@@ -409,6 +392,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderSide: BorderSide(color: Colors.green)
                           )
                       ),
+
                     ),
                     SizedBox(height: 20),
                     TextField(
@@ -521,20 +505,39 @@ class _RegisterPageState extends State<RegisterPage> {
         await firebaseAuth.createUserWithEmailAndPassword(
           email: email.toString(),
           password: password.toString(),
-        ).whenComplete(() async {
-          if(FirebaseAuth.instance.currentUser.email != null){
-            await FirebaseAuth.instance.currentUser.updateProfile(
-                displayName: displayName
-            );
+        ).then((firebaseUser) async {
+          await FirebaseAuth.instance.currentUser.updateProfile(
+                    displayName: displayName
+          ).then((value) async{
             setState(() {
               isLoading = false;
             });
-            context.read<AuthenticationService>().signOut();
-            Navigator.of(context).pop();
-          }
+            //I don't know if the next statement is necessary
+            firebaseAuth.signOut().whenComplete(() {
+              Navigator.of(context).pop();
+            });
+          });
 
 
         });
+
+
+
+        //
+        // whenComplete(() async {
+        //   if(FirebaseAuth.instance.currentUser.email != null){
+        //     await FirebaseAuth.instance.currentUser.updateProfile(
+        //         displayName: displayName
+        //     );
+        //     setState(() {
+        //       isLoading = false;
+        //     });
+        //     context.read<AuthenticationService>().signOut();
+        //     Navigator.of(context).pop();
+        //   }
+
+
+        // });
 
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {

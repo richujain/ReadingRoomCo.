@@ -35,7 +35,7 @@ class _Archive extends State<Archive> {
   final String url = "https://readingroomco.com/";
   int offset = 0;
   int currentMax = 10;
-  String api = "wp-json/wp/v2/posts?_embed&per_page=10";
+  String api = "wp-json/wp/v2/posts?_embed&per_page=99";
   List wp_posts;
   var postId;
   List<PostData> posts = [];
@@ -132,87 +132,13 @@ class _Archive extends State<Archive> {
                     ),
                   ),
                 ),
-                new Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-                        alignment: Alignment.bottomLeft,
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width / 2,
-                        child: MaterialButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: Colors.white)
-                          ),
-                          elevation: 0,
-                          height: 50,
-                          onPressed: () {
-
-
-                          },
-                          color: Colors.blue,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(FontAwesomeIcons.arrowCircleLeft),
-                              SizedBox(width: 20),
-                              Text("Previous",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16)),
-                            ],
-                          ),
-                          textColor: Colors.white,
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-                        alignment: Alignment.bottomLeft,
-                        width: MediaQuery
-                            .of(context)
-                            .size
-                            .width / 2,
-                        child: MaterialButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: Colors.white)
-                          ),
-                          elevation: 0,
-                          height: 50,
-                          onPressed: () {
-                            nextButtonForMoreData();
-                          },
-                          color: Colors.blue,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Next",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16)),
-                              SizedBox(width: 20),
-                              Icon(FontAwesomeIcons.arrowCircleRight),
-                            ],
-                          ),
-                          textColor: Colors.white,
-                        ),
-                      ),
-                    ]
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                    padding: EdgeInsets.only(left: 16, right: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                ),
                 isLoading && uid == null && uid.length == 0
-                    ? Center(
-                  child: CircularProgressIndicator(),
+                    ? new Container(
+                  width: MediaQuery.of(context).size.width,//70.0,
+                  height: MediaQuery.of(context).size.height, //70.0,
+                  child: new Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: new Center(child: new CircularProgressIndicator())),
                 ) : postsAsRow(size, api),
 
 
@@ -233,7 +159,7 @@ class _Archive extends State<Archive> {
               if (snapshot.hasData) {
                 return Center(
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height-210, // card height
+                    height: MediaQuery.of(context).size.height, // card height
                     child: new ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
