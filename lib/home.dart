@@ -725,10 +725,8 @@ class _HomePage extends State<HomePage> {
                               'postid': postId.toString(),
                               'title': convertedTitle.toString(),
                             });
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text("Added to Starred"),
-                              duration: const Duration(seconds: 1),
-                            ));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Added to Starred."),duration: const Duration(seconds: 1),));
+
                             print("title : " +
                                 convertedTitle +
                                 "Post ID " +
