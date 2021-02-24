@@ -40,7 +40,6 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    readFont();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -70,11 +69,12 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               FutureBuilder(
-                  future: readFont(),
+                  future: fetchFont(),
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     if (snapshot.hasData) {
                       return Container(
+
                           padding: EdgeInsets.all(0),
                           child: Column(children: [
                             Text(
@@ -126,11 +126,86 @@ class _SettingsState extends State<Settings> {
                 child: Container(
                   padding: EdgeInsets.only(left: 16, right: 16),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
+                    border: Border.all(color: Colors.grey, width: 0.5),
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
               ),
+
+
+
+
+
+              FutureBuilder(
+                  future: fetchFont(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    if (snapshot.hasData) {
+                      return Container(
+
+                          padding: EdgeInsets.all(0),
+                          child: Column(children: [
+                            Text(
+                              "Dark Theme",
+                              style: GoogleFonts.getFont(
+                                selectedFont,
+                                textStyle: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  height: 2,
+                                ),
+                              ),
+                            ),
+                            DropdownButton<String>(
+                              value: selectedFont,
+                              icon: Icon(Icons.arrow_downward),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: TextStyle(color: Colors.deepPurple),
+                              underline: Container(
+                                height: 2,
+                                color: Colors.deepPurpleAccent,
+                              ),
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  selectedFont = newValue;
+                                  saveFont();
+                                });
+                              },
+                              items: googleFonts.map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                            ),
+                          ]));
+                    }
+                    else{
+                      return Container(
+                        child: Text("Something is not right"),
+                      );
+                    }
+                  }),
+              Padding(
+                padding: const EdgeInsets.all(0.0),
+                child: Container(
+                  padding: EdgeInsets.only(left: 16, right: 16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey, width: 0.5),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+
+
+
+
+
+
+
             ]),
           ])),
     );
@@ -143,18 +218,16 @@ class _SettingsState extends State<Settings> {
     print('saved $selectedFont');
   }
 
-  Future<String> readFont() async {
+  Future<String> fetchFont() async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'selectedFont';
     final value = prefs.getString("" + key) ?? "";
     if (value == "") {
       selectedFont = "Roboto";
       return "Roboto";
-      print("selectedFont while reading" + selectedFont);
     } else {
       selectedFont = value;
       return value;
-      print("selectedFont while reading" + selectedFont);
     }
   }
 }

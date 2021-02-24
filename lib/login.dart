@@ -140,6 +140,14 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment(1.0,0.0),
                     padding: EdgeInsets.only(top: 15.0, left: 20.0),
                     child: InkWell(
+                      onTap: (){
+                        if(emailController.text.trim().isEmpty){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Enter your Email Address."),duration: const Duration(seconds: 1),));
+                        }
+                        else{
+                          resetPassword(emailController.text.trim());
+                        }
+                      },
                       child: Text('Forgot Password',
                         style: TextStyle(
                           color: Colors.green,
@@ -245,7 +253,12 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
+  @override
+  Future<void> resetPassword(String email) async {
+    await firebaseAuth.sendPasswordResetEmail(email: email).whenComplete(() {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password reset link send to $email"),duration: const Duration(seconds: 1),));
+    });
+  }
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     if (googleSignInAccount == null) {
@@ -277,6 +290,13 @@ class _LoginPageState extends State<LoginPage> {
     FirebaseAuth.instance.signOut();
     await googleSignIn.signOut();
     print("User Sign Out");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
   }
 
   void _login(context) async{
@@ -318,6 +338,14 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController displayNameController = TextEditingController();
 
   bool isLoading = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    displayNameController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

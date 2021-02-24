@@ -241,6 +241,16 @@ class _HomePage extends State<HomePage> {
                 Navigator.of(context).push(_createRouteToSubmission());
               },
             ),
+            ListTile(
+              leading: Icon(Icons.rate_review),
+              title: Text('About'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+                Navigator.pop(context);
+                Navigator.of(context).push(_createRouteToAbout());
+              },
+            ),
 
             ListTile(
               leading: Icon(Icons.rate_review),

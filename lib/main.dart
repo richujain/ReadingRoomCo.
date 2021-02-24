@@ -29,10 +29,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Reading Room Co.',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
+        theme: ThemeData.light(),
         home: AuthenticationWrapper(),
         routes: <String, WidgetBuilder>{
           '/home' : (BuildContext context) => new HomePage(),

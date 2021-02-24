@@ -168,11 +168,6 @@ class _SubmissionState extends State<Submission> {
                             icon: Icon(Icons.account_circle),
                           ),
                           controller: emailController,
-                          validator: (value) {
-                            if (value.isEmpty) return "This form value must be filled";
-                            return null;
-                          },
-                          autovalidateMode: AutovalidateMode.always,
                         ),
 
                         TextFormField(
@@ -268,6 +263,7 @@ class _SubmissionState extends State<Submission> {
 
                             if(result != null) {
                               document = File(result.files.single.path);
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("File Attached."),duration: const Duration(seconds: 1),));
                             } else {
                               // User canceled the picker
                             }

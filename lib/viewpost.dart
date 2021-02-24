@@ -20,7 +20,6 @@ import 'package:firebase_database/firebase_database.dart';
 
 class ViewPost extends StatefulWidget {
   PostData postData = new PostData("loading...","loading...","loading...","loading...","loading...","loading...");
-
   ViewPost({Key key, @required this.postData}) : super(key: key);
 
   @override
@@ -30,7 +29,11 @@ class ViewPost extends StatefulWidget {
 class _ViewPostState extends State<ViewPost> {
   wp.WordPress wordPress;
   String selectedFont = "Roboto";
-
+  final ThemeData specialThemeData = ThemeData(
+    brightness: Brightness.dark,
+    primaryColor: Colors.yellow[700],
+    // and so on...
+  );
   @override
   Widget build(BuildContext context) {
     var content;
