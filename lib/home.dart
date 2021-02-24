@@ -17,6 +17,7 @@ import 'package:reading_room_co/submission.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reading_room_co/starred.dart';
 import 'package:reading_room_co/viewpost.dart';
+import 'about.dart';
 import 'archive.dart';
 import 'wp-api.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -94,9 +95,6 @@ class _HomePage extends State<HomePage> {
               // Your state change code goes here
             });
           }
-        }
-        for (var i = 0; i < 6; i++) {
-          print("" + bookLists[5].name);
         }
       });
     }
@@ -505,6 +503,24 @@ class _HomePage extends State<HomePage> {
   Route _createRouteToSubmission() {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => Submission(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(0.0, 1.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+  Route _createRouteToAbout() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => About(),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(0.0, 1.0);
         var end = Offset.zero;

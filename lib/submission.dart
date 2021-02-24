@@ -88,7 +88,7 @@ class _SubmissionState extends State<Submission> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
                                 child: Image.asset(
-                                  'assets/images/circle_logo.jpg',
+                                  'assets/images/logo.png',
                                   height: 150,
                                   width: 150,
                                 ),
