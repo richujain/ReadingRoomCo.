@@ -4,23 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:reading_room_co/authentication_service.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_wordpress/flutter_wordpress.dart' as wp;
 import 'package:http/http.dart' as http;
-import 'package:reading_room_co/history.dart';
-import 'package:reading_room_co/postdata.dart';
 import 'package:reading_room_co/submissiondata.dart';
-import 'wp-api.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'postdata.dart';
 import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/scheduler.dart';
 
 
 
@@ -49,13 +38,15 @@ class _SubmissionState extends State<Submission> {
   String name,description,title;
   String headShotdownloadUrl;
   String documentDownloadUrl;
+  bool checkTermsAndConditions = false;
+
   @override
   Widget build(BuildContext context) {
     if (_firebaseAuth.currentUser.displayName != null) {
       emailForPath = _firebaseAuth.currentUser.email;
     }
     return Scaffold(
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
         title: Text("Reading Room Co.",
@@ -240,11 +231,6 @@ class _SubmissionState extends State<Submission> {
                             return null;
                           },
                         ),
-
-
-
-
-
                         SizedBox(height: 30,),
                         MaterialButton(
                           padding: EdgeInsets.all(8.0),
@@ -270,6 +256,7 @@ class _SubmissionState extends State<Submission> {
 
 
                           },
+
                           color: Colors.green,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -283,9 +270,44 @@ class _SubmissionState extends State<Submission> {
                           ),
                           textColor: Colors.white,
                         ),
+
+
+
+
+
+
+                        SizedBox(height: 20),
+                        Container(
+                          alignment: Alignment(0.0,0.0),
+                          padding: EdgeInsets.only(top: 15.0, left: 20.0),
+                          child: InkWell(
+                            onTap: (){
+                              showAlertDialog(context);
+                              // AlertDialog(
+                              //   title: Text('Very, very large title', textScaleFactor: 5),
+                              //   content: Text('Very, very large content', textScaleFactor: 5),
+                              //   actions: <Widget>[
+                              //     TextButton(child: Text('Button 1'), onPressed: () {}),
+                              //     TextButton(child: Text('Button 2'), onPressed: () {}),
+                              //   ],
+                              // );
+                            },
+                            child: Text('Terms and conditions',
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Montserrat',
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ),
+
+
+
+
+
                         SizedBox(height: 30,),
-
-
 
                         MaterialButton(
                           padding: EdgeInsets.all(8.0),
@@ -297,21 +319,32 @@ class _SubmissionState extends State<Submission> {
                           minWidth: double.maxFinite,
                           height: 50,
                           onPressed: () async {
-                            final FirebaseAuth auth = FirebaseAuth.instance;
-                            final User user = auth.currentUser;
-                            final uid = user.uid;
-                             emailForPath = emailController.text;
-                             name = nameController.text;
-                             description = descriptionController.text;
-                             title = titleController.text;
+                            emailForPath = emailController.text;
+                            name = nameController.text;
+                            description = descriptionController.text;
+                            title = titleController.text;
+
+                            if(checkTermsAndConditions == false){
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Agree to the Terms and conditions before submitting."),duration: const Duration(seconds: 3),));
+                            }
+                            else if(emailForPath.isEmpty || name.isEmpty || description.isEmpty || title.isEmpty || genre.isEmpty){
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Fill all the fields before submitting."),duration: const Duration(seconds: 3),));
+                            }
+                            else if(headShot == null && document == null){
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Upload your headshot and document."),duration: const Duration(seconds: 3),));
+                            }
+                            else{
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Uploading almost done..."),duration: const Duration(seconds: 3),));
+                              final FirebaseAuth auth = FirebaseAuth.instance;
+                              final User user = auth.currentUser;
+                              final uid = user.uid;
+
+
                               final myFuture = uploadToFirebaseStorage(uid,emailForPath,name,description,title,datetime,genre);
                               myFuture.then((value) => (downloadUrl){
                                 print("inside then"+downloadUrl[0] + "::::" + downloadUrl[1]);
-                            });
-
-
-
-
+                              });
+                            }
 
 
 
@@ -339,24 +372,6 @@ class _SubmissionState extends State<Submission> {
 
 
 
-                    // Form(
-                    //   key: _formKey,
-                    //   child: ListView(
-                    //     children: <Widget>[
-                    //       Column(), // we will work in here
-                    //     ],
-                    //   ),
-                    // ),
-                    //
-
-
-
-
-
-
-
-
-
                   ],
                 ),
               ),
@@ -367,6 +382,51 @@ class _SubmissionState extends State<Submission> {
       ),
     );
   }
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = FlatButton(
+      child: Text("I Agree"),
+      onPressed: () {
+        checkTermsAndConditions = true;
+        Navigator.of(context).pop();
+
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Close"),
+      onPressed:  () {
+        Navigator.of(context).pop();
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Terms and Conditions"),
+      content: SingleChildScrollView(
+        child: Text("I hereby agree that:\n\n 1. The articles /materials which are offered for publishing by the author to the publisher shall be editor compared by the editor "
+            "of the firm to adhere to appropriate publishing norms followed by the industry and will be subjected to rules government regulation.\n\n"
+          "2. Any articles / materials may be returned to the author unpublished being rejected by the editor of the firm for any reason and the firm has absolute right to do so.\n\n"
+          "3. The author shall give a written authorisation to the publisher to publish articles/ materials in the company website and shall not claim or make any demands for copyright benefits from the publisher.\n\n"
+          "4. Reading Room Co. reserves all rights to convert the matter or materials either fully or partially to PDF or PUB for kindle application simultaneously while publishing or at any future period as and when the company may think deem fit.\n\n"
+          "5. Reading Room Co. reserves all rights for any commercial value accrued to the Article / material published by any author on its website, while shall be only entitled to the publisher. The author will not get any payments/monetary benefits from the publisher.\n\n"
+         "6. Any advertisements or campaign run and promoted by the company either at the beginning or in between or after the article/material which published, is at the sole discretion of the publisher and the author has no right to demand any explanation for the same.\n\n"
+          "7. The name of the author shall be published along with the article/ materials given for publication. However the editor reserves all rights to change the original name of the author to pen name or use any pseudonym or hide the name accordingly at appropriate situation.\n\n"
+          "8. Reading Room Co. will not be responsible to any author for any comments made by any readers/ viewers of the website and shall be liable to pay any compensation to the author if any viewer/ readers for any legal action taken against the author  of the article/ materials.\n"        "9. In the events of the transfer of ownership of  Reading Room Co. to any other Company or person / business house any policy change shall not affect the present ownership and the present owners do not own any responsibility and liability towards the authors who have authorised to publish their articles.\n\n"
+          "10. Reading Room Company reserves all rights to change / amend any clause in this agreement in the best interest of the company.\n"),
+      ),
+
+      actions: [
+        okButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   _imgFromCamera() async {
     File image = await ImagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 50
