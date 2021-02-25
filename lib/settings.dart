@@ -30,6 +30,10 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   String selectedFont;
+  final TextEditingController passwordFirstController = TextEditingController();
+  final TextEditingController passwordSecondController =
+      TextEditingController();
+
   List<String> googleFonts = [
     'Roboto',
     'Open Sans',
@@ -41,7 +45,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         centerTitle: true,
         title: Text("Reading Room Co.",
@@ -54,8 +58,9 @@ class _SettingsState extends State<Settings> {
       ),
       body: SingleChildScrollView(
           child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
             Column(children: [
               Padding(
@@ -74,141 +79,225 @@ class _SettingsState extends State<Settings> {
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     if (snapshot.hasData) {
                       return Container(
-
                           padding: EdgeInsets.all(0),
                           child: Column(children: [
-                            Text(
-                              "Preferred Font",
-                              style: GoogleFonts.getFont(
-                                selectedFont,
-                                textStyle: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  height: 2,
+                            Container(
+                              padding:
+                                  EdgeInsets.fromLTRB(15.0, 15.0, 0.0, 0.0),
+                              child: Center(
+                                  child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: Image.asset(
+                                  'assets/images/logo.png',
+                                  height: 150,
+                                  width: 150,
+                                ),
+                              )),
+                            ),
+                            Container(
+                              padding:
+                                  EdgeInsets.fromLTRB(15.0, 15.0, 0.0, 15.0),
+                              child: Center(
+                                child: Text(
+                                  "Version 1.1.2",
+                                  style: GoogleFonts.getFont(
+                                    selectedFont,
+                                    textStyle: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal,
+                                      height: 2,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                            DropdownButton<String>(
-                              value: selectedFont,
-                              icon: Icon(Icons.arrow_downward),
-                              iconSize: 24,
-                              elevation: 16,
-                              style: TextStyle(color: Colors.deepPurple),
-                              underline: Container(
-                                height: 2,
-                                color: Colors.deepPurpleAccent,
-                              ),
-                              onChanged: (String newValue) {
-                                setState(() {
-                                  selectedFont = newValue;
-                                  saveFont();
-                                });
-                              },
-                              items: googleFonts.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
+
+
+                            new Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Text(
+                                      "Preferred Font",
+                                      style: GoogleFonts.getFont(
+                                        selectedFont,
+                                        textStyle: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          height: 2,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: DropdownButton<String>(
+                                      value: selectedFont,
+                                      icon: Icon(Icons.arrow_downward),
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      style:
+                                          TextStyle(color: Colors.deepPurple),
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.deepPurpleAccent,
+                                      ),
+                                      onChanged: (String newValue) {
+                                        setState(() {
+                                          selectedFont = newValue;
+                                          saveFont();
+                                        });
+                                      },
+                                      items: googleFonts
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                ]),
+
+
+
+                            Container(
+                                padding: EdgeInsets.only(
+                                    top: 0.0, left: 20.0, right: 20.0),
+                                child: Column(children: <Widget>[
+                                  SizedBox(height: 20),
+                                  TextField(
+                                    controller: passwordFirstController,
+                                    decoration: InputDecoration(
+                                        labelText: 'New Password',
+                                        labelStyle: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey,
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.green))),
+                                    obscureText: true,
+                                  ),
+                                  SizedBox(height: 20),
+                                  TextField(
+                                    controller: passwordSecondController,
+                                    decoration: InputDecoration(
+                                        labelText: 'Confirm Password',
+                                        labelStyle: TextStyle(
+                                          fontFamily: 'Montserrat',
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey,
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.green))),
+                                    obscureText: true,
+                                  ),
+                                  SizedBox(height: 40),
+                                  MaterialButton(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(18.0),
+                                        side: BorderSide(color: Colors.white)),
+                                    elevation: 0,
+                                    minWidth: double.maxFinite,
+                                    height: 50,
+                                    onPressed: () {
+                                      if(passwordFirstController.value.text.trim() == passwordSecondController.value.text.trim()){
+                                        _changePassword(""+passwordFirstController.value.text.trim().toString());
+                                      }
+                                      else{
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password does not match. Try Again."),duration: const Duration(seconds: 1),));
+                                      }
+                                    },
+                                    color: Colors.green,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox(width: 10),
+                                        Text('Change Passowrd',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16)),
+                                      ],
+                                    ),
+                                    textColor: Colors.white,
+                                  ),
+                                ])),
+
+
+
+
+
+
+
+
+
                           ]));
-                    }
-                    else{
+                    } else {
                       return Container(
                         child: Text("Something is not right"),
                       );
                     }
                   }),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Container(
-                  padding: EdgeInsets.only(left: 16, right: 16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 0.5),
-                    borderRadius: BorderRadius.circular(15),
+              SizedBox(
+                height: 30,
+              ),
+              Container(
+                padding: EdgeInsets.only(
+                    top: 0.0, left: 20.0, right: 20.0, bottom: 20.0),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: MaterialButton(
+                    padding: EdgeInsets.all(8.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: Colors.white)),
+                    elevation: 0,
+                    minWidth: double.maxFinite,
+                    height: 50,
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushReplacementNamed('/');
+                      context.read<AuthenticationService>().signOut();
+                    },
+                    color: Colors.red,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Logout',
+                            style: TextStyle(color: Colors.white, fontSize: 16)),
+                      ],
+                    ),
+                    textColor: Colors.white,
                   ),
                 ),
               ),
-
-
-
-
-
-              FutureBuilder(
-                  future: fetchFont(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    if (snapshot.hasData) {
-                      return Container(
-
-                          padding: EdgeInsets.all(0),
-                          child: Column(children: [
-                            Text(
-                              "Dark Theme",
-                              style: GoogleFonts.getFont(
-                                selectedFont,
-                                textStyle: TextStyle(
-                                  fontSize: 24,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  height: 2,
-                                ),
-                              ),
-                            ),
-                            DropdownButton<String>(
-                              value: selectedFont,
-                              icon: Icon(Icons.arrow_downward),
-                              iconSize: 24,
-                              elevation: 16,
-                              style: TextStyle(color: Colors.deepPurple),
-                              underline: Container(
-                                height: 2,
-                                color: Colors.deepPurpleAccent,
-                              ),
-                              onChanged: (String newValue) {
-                                setState(() {
-                                  selectedFont = newValue;
-                                  saveFont();
-                                });
-                              },
-                              items: googleFonts.map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                            ),
-                          ]));
-                    }
-                    else{
-                      return Container(
-                        child: Text("Something is not right"),
-                      );
-                    }
-                  }),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Container(
-                  padding: EdgeInsets.only(left: 16, right: 16),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 0.5),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              ),
-
-
-
-
-
-
-
             ]),
           ])),
     );
+  }
+
+  void _changePassword(String password) async {
+    //Create an instance of the current user.
+    User user = FirebaseAuth.instance.currentUser;
+
+    //Pass in the password to updatePassword.
+    user.updatePassword(password).then((_) {
+      print("Successfully changed password");
+    }).catchError((error) {
+      print("Password can't be changed" + error.toString());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed : " + error.message),duration: const Duration(seconds: 3),));
+      //This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+    });
   }
 
   saveFont() async {

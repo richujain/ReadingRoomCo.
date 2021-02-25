@@ -319,6 +319,7 @@ class _LoginPageState extends State<LoginPage> {
         } else if (e.code == 'wrong-password') {
           print('Wrong password provided for that user.');
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Wrong password provided for that user."),duration: const Duration(seconds: 1),));
+          Navigator.of(context).pushReplacementNamed('/');
         }
       }
     }

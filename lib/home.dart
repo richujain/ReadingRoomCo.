@@ -286,18 +286,18 @@ class _HomePage extends State<HomePage> {
             //   height: 1,
             //   thickness: 1,
             // ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: () {
-                // Update the state of the app.
-                // ...
-                //_signOut();
-                Navigator.of(context).pop();
-                Navigator.of(context).pushReplacementNamed('/');
-                context.read<AuthenticationService>().signOut();
-              },
-            ),
+            // ListTile(
+            //   leading: Icon(Icons.logout),
+            //   title: Text('Logout'),
+            //   onTap: () {
+            //     // Update the state of the app.
+            //     // ...
+            //     //_signOut();
+            //     Navigator.of(context).pop();
+            //     Navigator.of(context).pushReplacementNamed('/');
+            //     context.read<AuthenticationService>().signOut();
+            //   },
+            // ),
           ],
         ),
       ),
