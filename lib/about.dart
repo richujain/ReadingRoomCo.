@@ -57,189 +57,149 @@ class _AboutState extends State<About> {
     child: FutureBuilder(
       future: fetchAboutDetails(),
       builder: (context,snapshot){
-        return Container(
-          child: Column(
-            children: [
+        if(snapshot.hasData){
+          return Container(
+            child: Column(
+              children: [
 
 
 
 
 
 
-              new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      height: 200,
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(15.0, 15.0, 0.0, 15.0),
-                        child: Center(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Image.asset(
-                                'assets/images/logo.png',
-                                height: 150,
-                                width: 150,
-                              ),
-                            )
+                new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(15.0, 15.0, 0.0, 15.0),
+                          child: Center(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: Image.asset(
+                                  'assets/images/logo.png',
+                                  height: 150,
+                                  width: 150,
+                                ),
+                              )
+                          ),
                         ),
                       ),
-                    ),
-                  ]
-              ),
-              new Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          "Reading Room Co. is an independent online publication platform dedicated to exploring literature, politics, society and culture. We embody a creative, publishing practice that integrates critical engagement with literature as well as contemporary socio-political issues. We offer fiction, articles, poetry and interviews by setting the stage for aspiring writers to share their creations, and readers to reflect on them. Reading Room Co. is essentially a progressive space that encourages writers to explore and experiment with their creativity as well as develop a strong sense of inquiry. Be it fiction, nonfiction or poetry, we offer stories that are diverse, political, and original.",
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            height: 2,
-                          ),
-                        )),
-                  ]
-              ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 1),
-                    borderRadius: BorderRadius.circular(15),
-                  ),
+                    ]
                 ),
-              ),
-
-
-
-
-
-
-
-
-
-
-
-
-
-              new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  height: 200,
-                  width: MediaQuery.of(context).size.width,
+                new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            "Reading Room Co. is an independent online publication platform dedicated to exploring literature, politics, society and culture. We embody a creative, publishing practice that integrates critical engagement with literature as well as contemporary socio-political issues. We offer fiction, articles, poetry and interviews by setting the stage for aspiring writers to share their creations, and readers to reflect on them. Reading Room Co. is essentially a progressive space that encourages writers to explore and experiment with their creativity as well as develop a strong sense of inquiry. Be it fiction, nonfiction or poetry, we offer stories that are diverse, political, and original.",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              height: 2,
+                            ),
+                          )),
+                    ]
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8.0),
                   child: Container(
-                      child:
-                      ClipRRect(
-                        borderRadius:
-                        BorderRadius.circular(16.0),
-                        child: Image.network(aboutList[0].imageurl,fit: BoxFit.contain,),
-                      )
-                    //
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 1),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                   ),
                 ),
-              ]
-          ),
-              new Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          ""+aboutList[0].about,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            height: 2,
-                          ),
-                        )),
-                  ]
-              ),
 
 
 
 
 
 
-              new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      height: 200,
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                          child: ClipRRect(
-                            borderRadius:
-                            BorderRadius.circular(100.0),
-                            child: Image.network(aboutList[1].imageurl,fit: BoxFit.contain,),
-                          )
-                        //
+
+
+
+
+
+
+
+                new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        child: Container(
+                            child:
+                            ClipRRect(
+                              borderRadius:
+                              BorderRadius.circular(16.0),
+                              child: Image.network(aboutList[0].imageurl,fit: BoxFit.contain,),
+                            )
+                          //
+                        ),
                       ),
-                    ),
-                  ]
-              ),
-              new Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          ""+aboutList[1].about,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            height: 2,
-                          ),
-                        )),
-                  ]
-              ),
+                    ]
+                ),
+                new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            ""+aboutList[0].about,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              height: 2,
+                            ),
+                          )),
+                    ]
+                ),
 
 
 
 
 
 
-
-
-              new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      height: 200,
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                          child: ClipRRect(
-                            borderRadius:
-                            BorderRadius.circular(100.0),
-                            child: Image.network(aboutList[2].imageurl,fit: BoxFit.contain,),
-                          )
-                        //
+                new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        child: Container(
+                            child: ClipRRect(
+                              borderRadius:
+                              BorderRadius.circular(100.0),
+                              child: Image.network(aboutList[1].imageurl,fit: BoxFit.contain,),
+                            )
+                          //
+                        ),
                       ),
-                    ),
-                  ]
-              ),
-              new Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          ""+aboutList[2].about,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            height: 2,
-                          ),
-                        )),
-                  ]
-              ),
+                    ]
+                ),
+                new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            ""+aboutList[1].about,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              height: 2,
+                            ),
+                          )),
+                    ]
+                ),
 
 
 
@@ -247,39 +207,40 @@ class _AboutState extends State<About> {
 
 
 
-              new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      height: 200,
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                          child: ClipRRect(
-                            borderRadius:
-                            BorderRadius.circular(100.0),
-                            child: Image.network(aboutList[3].imageurl,fit: BoxFit.contain,),
-                          )
-                        //
+
+                new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        child: Container(
+                            child: ClipRRect(
+                              borderRadius:
+                              BorderRadius.circular(100.0),
+                              child: Image.network(aboutList[2].imageurl,fit: BoxFit.contain,),
+                            )
+                          //
+                        ),
                       ),
-                    ),
-                  ]
-              ),
-              new Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          ""+aboutList[3].about,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            height: 2,
-                          ),
-                        )),
-                  ]
-              ),
+                    ]
+                ),
+                new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            ""+aboutList[2].about,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              height: 2,
+                            ),
+                          )),
+                    ]
+                ),
 
 
 
@@ -287,51 +248,96 @@ class _AboutState extends State<About> {
 
 
 
-
-
-
-
-
-
-              new Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      height: 200,
-                      width: MediaQuery.of(context).size.width,
-                      child: Container(
-                          child: ClipRRect(
-                            borderRadius:
-                            BorderRadius.circular(100.0),
-                            child: Image.network(aboutList[4].imageurl,fit: BoxFit.contain,),
-                          )
-                        //
+                new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        child: Container(
+                            child: ClipRRect(
+                              borderRadius:
+                              BorderRadius.circular(100.0),
+                              child: Image.network(aboutList[3].imageurl,fit: BoxFit.contain,),
+                            )
+                          //
+                        ),
                       ),
-                    ),
-                  ]
-              ),
-              new Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Container(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          ""+aboutList[4].about,
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                            height: 2,
-                          ),
-                        )),
-                  ]
-              ),
+                    ]
+                ),
+                new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            ""+aboutList[3].about,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              height: 2,
+                            ),
+                          )),
+                    ]
+                ),
 
 
 
-            ],
-          ),
-        );
+
+
+
+
+
+
+
+
+
+
+                new Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        child: Container(
+                            child: ClipRRect(
+                              borderRadius:
+                              BorderRadius.circular(100.0),
+                              child: Image.network(aboutList[4].imageurl,fit: BoxFit.contain,),
+                            )
+                          //
+                        ),
+                      ),
+                    ]
+                ),
+                new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            ""+aboutList[4].about,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              height: 2,
+                            ),
+                          )),
+                    ]
+                ),
+
+
+
+              ],
+            ),
+          );
+        }
+        else{
+          return Container();
+        }
+
       },
     )
             ),
@@ -362,5 +368,6 @@ class _AboutState extends State<About> {
         aboutList.sort((a, b) => a.order.compareTo(b.order));
       }
     });
+    return FirebaseDatabase.instance.reference().child("about").orderByChild("order").once();;
   }
 }
