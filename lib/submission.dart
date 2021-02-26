@@ -485,7 +485,7 @@ class _SubmissionState extends State<Submission> {
       var snapshot = await _firebaseStorage.ref()
           .child(emailForPath+"/"+datetime+"/image")
           .putFile(file);
-      headShotdownloadUrl = await snapshot.ref.getDownloadURL();
+      // headShotdownloadUrl = await snapshot.ref.getDownloadURL();
 
 
       var fileDocument = File(document.path);
@@ -494,7 +494,7 @@ class _SubmissionState extends State<Submission> {
         var snapshot = await _firebaseStorage.ref()
             .child(emailForPath+"/"+datetime+"/document")
             .putFile(fileDocument);
-        documentDownloadUrl = await snapshot.ref.getDownloadURL();
+        // documentDownloadUrl = await snapshot.ref.getDownloadURL();
 
         final databaseReference = FirebaseDatabase.instance.reference();
         databaseReference.child(uid).child("submission").push().set({
